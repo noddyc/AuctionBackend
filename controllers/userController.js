@@ -138,7 +138,9 @@ const updateUser = async (req, res) =>{
         if(req.body.address !==  ""){
             obj = {...obj, address: req.body.address};
         }
-        obj = {...obj, timezone: req.body.timezone}
+        if(req.bodu.timezone !== ""){
+            obj = {...obj, timezone: req.body.timezone}
+        }
         console.log(obj)
         const result = await db.user.update(obj, {where: updateConditions})
         console.log(result)
