@@ -138,7 +138,7 @@ const updateUser = async (req, res) =>{
         if(req.body.address !==  ""){
             obj = {...obj, address: req.body.address};
         }
-        if(req.bodu.timezone !== ""){
+        if(req.body.timezone !== ""){
             obj = {...obj, timezone: req.body.timezone}
         }
         console.log(obj)
