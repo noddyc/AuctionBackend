@@ -14,7 +14,7 @@ const bidRouter = require('./routes/bidRouter')
 const app = express()
 app.use(cors());
 app.use(bodyParser.json());
-// 如果用qs结构，则用extend:true
+// 如果用qs结构，则用extend:true`
 app.use(bodyParser.urlencoded({
     extended:true,
 }))
