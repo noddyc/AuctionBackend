@@ -96,6 +96,18 @@ const joinAuction= async (req, res)=>{
             }
             // add a relationship to bid record
             const addNewBid = await db.biding.create(newBid);
+
+            // add a relationship to user auction
+            const matchUserAuction = await db.user_auction.findOne({
+                where: {userId:req.body.userId, auctionId: req.body.auctionId}
+            })
+            
+            if(!matchUserAuction?.dataValues){
+                const addUserAuction = await db.user_auction.create(
+                    {userId:req.body.userId, auctionId: req.body.auctionId}
+                )
+            };
+
             return res.status(200).json(addNewBid);
         })
     }catch(err){

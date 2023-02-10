@@ -1,5 +1,6 @@
 const dbConfig = require('../config/dbConfig.js')
 const {Sequelize, DataTypes, VIRTUAL} = require('sequelize');
+const moment = require('moment')
 
 const sequelize = new Sequelize(
     dbConfig.DB,
@@ -68,7 +69,7 @@ function generate(){
     let imagepath = ""
     let address = "1 Lomb Memorial Dr, Rochester, NY 14623"
     let arr = []
-    for(let i = 0; i <= 30; i++){
+    for(let i = 0; i <= 25; i++){
         let email = "a" + i + "@rit.edu"
         let username = "a"+i
         arr.push({email: email, username: username, firstname: firstname,
@@ -99,16 +100,18 @@ function generate(){
         "Pandas are black and white bear species."
       ];
     let product_price = "210.01"
-    let start_time = "2022-01-08 08:00:00"
+    let start_time = moment.tz("2022-01-08T08:00:00","YYYY-MM-DDTHH:mm:ss", 'UTC').format();
+    let end_time = moment.tz("2022-01-08T13:00:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format();
     let status_arr = ["CLOSED", "IN_PROGRESS", "COMPLETED",
     "CANCELED", "WAITING"]
     let price_arr = ['212.02', '2132.12', '65.90', '434.12', '769.03']
     
+    // moment(year+'-'+getRandomInt(2,9)+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00', 'UTC').format()
     for(let i = 0; i < 500; i++){
-        auctionArr.push({ownerId: getRandomInt(1,30), product_name: product_name_arr[getRandomInt(0,8)], 
+        auctionArr.push({ownerId: getRandomInt(1,20), product_name: product_name_arr[getRandomInt(0,8)], 
             product_description: product_description_arr[getRandomInt(0,4)],
             product_price: price_arr[getRandomInt(0,4)], status: status_arr[getRandomInt(0,4)],
-            start_time: start_time, end_time: year+'-'+getRandomInt(2,9)+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00'
+            start_time: start_time, end_time: end_time
          })
     }
     db.auction.bulkCreate(auctionArr).then(()=>{console.log("bulk auctions created")})
