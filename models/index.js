@@ -54,16 +54,61 @@ module.exports = {db, sequelize};
 
 
 function generate(){
+
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     let firstname = "Harry"
     let lastname = "Potter"
     let password = "2446592Ny!"
     let imagepath = ""
+    let address = "1 Lomb Memorial Dr, Rochester, NY 14623"
     let arr = []
-    for(let i = 0; i <= 20; i++){
+    for(let i = 0; i <= 30; i++){
         let email = "a" + i + "@rit.edu"
         let username = "a"+i
         arr.push({email: email, username: username, firstname: firstname,
-        lastname: lastname, password: password, imagepath : imagepath})
+        lastname: lastname, password: password, imagepath : imagepath, address:address})
     }
     db.user.bulkCreate(arr).then(()=>{console.log("bulk user records created")})
+
+
+    let year = '2023'
+    let month = '01'
+    let winningArr = [];
+    for(let i=0; i <= 20; i++){
+        let curDate = year+'-'+month+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00'
+        winningArr.push({number: getRandomInt(0,9), postTime: curDate})
+    }
+
+    db.winning_number.bulkCreate(winningArr).then(()=>{console.log("bulk winning number created")})
+
+
+
+    let auctionArr= [];
+    let product_name_arr = ["Lion", "Tiger", "Elephant", "Giraffe", "Cheetah", "Leopard", "Zebra", "Hippopotamus", "Rhinoceros", "Gorilla"];
+    const product_description_arr = [
+        "Lions are big cats, apex predators.",
+        "Elephants are intelligent, large land animals.",
+        "Giraffes are tall mammals with long necks.",
+        "Hippos are semi-aquatic, aggressive animals.",
+        "Pandas are black and white bear species."
+      ];
+    let product_price = "210.01"
+    let start_time = "2022-01-08 08:00:00"
+    let status_arr = ["CLOSED", "IN_PROGRESS", "COMPLETED",
+    "CANCELED", "WAITING"]
+    let price_arr = ['212.02', '2132.12', '65.90', '434.12', '769.03']
+    
+    for(let i = 0; i < 500; i++){
+        auctionArr.push({ownerId: getRandomInt(1,30), product_name: product_name_arr[getRandomInt(0,8)], 
+            product_description: product_description_arr[getRandomInt(0,4)],
+            product_price: price_arr[getRandomInt(0,4)], status: status_arr[getRandomInt(0,4)],
+            start_time: start_time, end_time: year+'-'+getRandomInt(2,9)+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00'
+         })
+    }
+    db.auction.bulkCreate(auctionArr).then(()=>{console.log("bulk auctions created")})
 }
