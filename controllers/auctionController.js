@@ -182,8 +182,9 @@ const cancelAuction = async(req, res)=>{
     try{
         const userId = req.body.userId;
         const auctionId = req.body.auctionId;
-        const result = await db.auction.destroy({
-            where:{
+        const result = await db.auction.update(
+            {status: 'CANCELED'},
+            {where:{
                 [Op.and]:{
                     ownerId:{
                         [Op.eq]: userId
@@ -195,8 +196,8 @@ const cancelAuction = async(req, res)=>{
                         [Op.or]: ['IN_PROGRESS', 'CLOSED']
                     }
                 }
-            }
-        })
+            }}
+        )
         res.status(200).json(result);
     }catch(err){
         res.status(500).send("Failed to delete this auction");
