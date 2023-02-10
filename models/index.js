@@ -48,6 +48,7 @@ db.biding.belongsTo(db.auction, {foreignKey: 'auctionId',  onDelete: 'cascade' }
 
 // generate()
 
+//
 db.sequelize.sync({force: false}).then(()=>console.log("DB Sync completed"))
 
 module.exports = {db, sequelize};
