@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes)=>{
             type: DataTypes.INTEGER,
             defaultValue: 10
         },
+        // comit before rules apply
         slot_0:{
             type: DataTypes.INTEGER,
             defaultValue: null
