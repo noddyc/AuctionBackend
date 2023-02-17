@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes)=>{
             type: DataTypes.STRING,
             allowNull:false
         },
-        admin:{
-            type: DataTypes.BOOLEAN,
+        identity:{
+            type: DataTypes.ENUM("ADMIN", "USER", "SUPERADMIN"),
             allowNull: false,
-            defaultValue: false
+            defaultValue: "USER"
         },
         address:{
             type: DataTypes.STRING,

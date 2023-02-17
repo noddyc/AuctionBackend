@@ -5,4 +5,5 @@ auctionRouter.put('/addAuction', auctionController.addAuction)
 auctionRouter.post('/joinAuction', auctionController.joinAuction)
 auctionRouter.post('/cancelAuction', auctionController.cancelAuction)
 auctionRouter.post('/displayAuction', auctionController.displayAuction)
+auctionRouter.post('/createAuction', auctionController.createAuction)
 module.exports = auctionRouter

@@ -25,53 +25,7 @@ module.exports = (sequelize, DataTypes)=>{
             defaultValue: false
         },
         status:{
-            type: DataTypes.ENUM("CLOSED", "IN_PROGRESS", "COMPLETED",
-            "CANCELED", "WAITING")
-        },
-        slotsOpen: {
-            type: DataTypes.INTEGER,
-            defaultValue: 10
-        },
-        // comit before rules apply
-        slot_0:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_1:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_2:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_3:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_4:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_5:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_6:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_7:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_8:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
-        },
-        slot_9:{
-            type: DataTypes.INTEGER,
-            defaultValue: null
+            type: DataTypes.ENUM("CLOSED", "IN_PROGRESS", "COMPLETED", "WAITING")
         },
     },
     {timestamps:false})

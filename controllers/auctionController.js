@@ -21,17 +21,17 @@ const addAuction= async (req, res)=>{
         status: req.body.status,//
         winning_number: req.body.winning_number || null, //
         restart: req.body.restart || false,//
-        slotsOpen: req.body.slots || 10,//
-        slot_0: req.body.slot_0 || null,
-        slot_1: req.body.slot_1 || null, 
-        slot_2: req.body.slot_2 || null,
-        slot_3: req.body.slot_3 || null,
-        slot_4: req.body.slot_4 || null,
-        slot_5: req.body.slot_5 || null,
-        slot_6: req.body.slot_6 || null,
-        slot_7: req.body.slot_7 || null,
-        slot_8: req.body.slot_8 || null,
-        slot_9: req.body.slot_9 || null,
+        // slotsOpen: req.body.slots || 10,//
+        // slot_0: req.body.slot_0 || null,
+        // slot_1: req.body.slot_1 || null, 
+        // slot_2: req.body.slot_2 || null,
+        // slot_3: req.body.slot_3 || null,
+        // slot_4: req.body.slot_4 || null,
+        // slot_5: req.body.slot_5 || null,
+        // slot_6: req.body.slot_6 || null,
+        // slot_7: req.body.slot_7 || null,
+        // slot_8: req.body.slot_8 || null,
+        // slot_9: req.body.slot_9 || null,
     }
     try{
         const insertion = await db.auction.create(obj)
@@ -205,6 +205,41 @@ const cancelAuction = async(req, res)=>{
 }
 
 
+const createAuction = async(req, res)=>{
+    try{
+        const result = await db.slotsTable.create();
+        const id = result.dataValues.id;
+        let obj = {
+            ownerId: req.body.ownerId,//
+            product_name: req.body.product_name,//
+            product_price: req.body.product_price,//
+            product_description: req.body.product_description,//
+            start_time: req.body.start_time,//
+            end_time: req.body.end_time,//
+            status: req.body.status,//
+            winning_number: req.body.winning_number || null, //
+            restart: req.body.restart || false,//
+
+        }
+        res.status(200).json(result.dataValues.id);
+    }catch(err){
+        res.status(500).send("Failed to create auction");
+    }
+    // let obj = {
+    //     ownerId: req.body.ownerId,//
+    //     product_name: req.body.product_name,//
+    //     product_price: req.body.product_price,//
+    //     product_description: req.body.product_description,//
+    //     start_time: req.body.start_time,//
+    //     end_time: req.body.end_time,//
+    //     status: req.body.status,//
+    //     winning_number: req.body.winning_number || null, //
+    //     restart: req.body.restart || false,//
+
+    // }
+
+}
+
 module.exports={
-    addAuction, joinAuction, cancelAuction, displayAuction
+    addAuction, joinAuction, cancelAuction, displayAuction, createAuction
 }

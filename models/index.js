@@ -34,7 +34,7 @@ db.user_auction = require('./user_auction')(sequelize, DataTypes)
 db.notification = require('./notification')(sequelize, DataTypes)
 db.biding = require('./biding')(sequelize, DataTypes)
 db.winning_number = require('./winning_number')(sequelize, DataTypes)
-
+db.slot = require('./slot')(sequelize, DataTypes)
 
 db.user.belongsToMany(db.auction, {as:'userId', through: db.user_auction, foreignKey: 'userId'})
 db.auction.belongsToMany(db.user, {as: 'auctionId', through: db.user_auction, foreignKey: 'auctionId'})
@@ -47,6 +47,23 @@ db.notification.belongsTo(db.user, {foreignKey: 'userId', onDelete: 'cascade' })
 db.biding.belongsTo(db.user, {foreignKey: 'userId',  onDelete: 'cascade' })
 db.biding.belongsTo(db.auction, {foreignKey: 'auctionId',  onDelete: 'cascade' })
 
+db.slot.belongsTo(db.user,{foreignKey: 'player1', onDelete: 'cascade'})
+db.slot.belongsTo(db.user,{foreignKey: 'player2', onDelete: 'cascade'})
+db.slot.belongsTo(db.auction, { foreignKey: 'auctionId', onDelete: 'cascade'})
+
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_0', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_1', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_2', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_3', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_4', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_5', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_6', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_7', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_8', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_9', onDelete: 'cascade'})
+
+db.notification.belongsTo(db.auction, {foreignKey: 'auctionId', onDelete: 'cascade' })
+db.notification.belongsTo(db.user, {foreignKey:'userId', onDelete: 'cascade'})
 // generate()
 
 //
