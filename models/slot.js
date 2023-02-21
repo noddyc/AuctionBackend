@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes)=>{
         split:{
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        selfOwn:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
 
     },

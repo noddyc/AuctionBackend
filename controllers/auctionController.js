@@ -1130,21 +1130,224 @@ const joinAuction1 = async(req, res)=>{
     }
 }
 
+function findOwnerSpot(dataValues){
+    let arr = ['slot0', 'slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8', 'slot9']
+    for(let i = 0; i < arr.length; i++){
+        if(dataValues[arr[i]] !== null && dataValues[arr[i]].selfOwn == true){
+            return dataValues[arr[i]].id;
+        }
+    }
+    return null;
+
+}
+
 const rollOver = async(req, res) =>{
     //check status and winner
     try{
-        const result = await db.auction.findOne({
-            where: {id: req.body.auctionId}
+        const result = await sequelize.transaction(async ()=>{
+            const matchAuction = await db.auction.findOne({
+                include:[
+                    {
+                        model: db.slot,
+                        as: 'slot0',
+                      },
+                    {
+                      model: db.slot,
+                      as: 'slot1',
+                    },
+                    {
+                      model: db.slot,
+                      as: 'slot2',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot3',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot4',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot5',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot6',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot7',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot8',
+                      },
+                    {
+                        model: db.slot,
+                        as: 'slot9',
+                    }
+                  ]
+                ,
+                where:{
+                    id: req.body.auctionId
+                }
+            })
+            // check status
+            if(matchAuction.dataValues.status !== 'NO_WINNER_WINNER_NOTIFIED'){
+                throw new Error("Failed to RollOver");
+            }
+            // check no winner
+            const num = await db.winning_number.findOne({
+                where: {id: matchAuction.dataValues.winnning_number}
+            })
+    
+            if(matchAuction.dataValues[`slot_${num.number}`] !== null){
+                throw new Error("Failed to RollOver with a winner")
+            }
+    
+            // find onwer spot
+            let ownerSpot = findOwnerSpot(matchAuction.dataValues);
+           
+            // delete owner spot
+            if(ownerSpot !== null){
+                const deleteSpot = await db.slot.destroy(
+                    {where: 
+                        {id: ownerSpot}
+                    }
+                )
+            }
+
+            // update status
+            let updateStatus = await db.auction.update(
+                {status: "OPEN_NOT_LIVE"},
+                {where: {
+                    id: req.body.auctionId
+                }}
+            )            
+            return res.status(200).json(updateStatus);
         })
     }catch(err){
-
+        res.status(500).send({msg: err.message});
     }
 }
 
-const addHost = async(req, res)=>{
+function sixSpotTaken(dataValues){
+    let arr = ['slot0', 'slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8', 'slot9']
+    let count = 0;
+    for(let i = 0; i < arr.length; i++){
+        if(dataValues[arr[i]] != null){
+            count++;
+        }
+    }
+    return count === 6;
+}
 
+function firstOpenSpot(dataValues){
+    let arr = ['slot_0', 'slot_1', 'slot_2', 'slot_3', 'slot_4', 'slot_5', 'slot_6', 'slot_7', 'slot_8', 'slot_9']
+    let count = 0;
+    for(let i = 0; i < arr.length; i++){
+        if(dataValues[arr[i]] === null){
+            return arr[i];
+        }
+    }
+    return null;
+}
+const addHost = async(req, res)=>{
+    // is waiting for draw
+    // has six spot
+    try{
+        const result = await sequelize.transaction(async ()=>{
+            const matchAuction = await db.auction.findOne({
+                include:[
+                    {
+                        model: db.slot,
+                        as: 'slot0',
+                      },
+                    {
+                      model: db.slot,
+                      as: 'slot1',
+                    },
+                    {
+                      model: db.slot,
+                      as: 'slot2',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot3',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot4',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot5',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot6',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot7',
+                    },
+                    {
+                        model: db.slot,
+                        as: 'slot8',
+                      },
+                    {
+                        model: db.slot,
+                        as: 'slot9',
+                    }
+                  ]
+                ,
+                where:{
+                    id: req.body.auctionId
+                }
+            })
+            if(matchAuction.dataValues.status !=='WAITING_FOR_DRAW'){
+                console.log("1310 here")
+                throw new Error("Failed to pick slot as host")
+            }
+            if(!sixSpotTaken(matchAuction.dataValues)){
+                console.log(sixSpotTaken(matchAuction.dataValues));
+                console.log("1314 here")
+                throw new Error("Failed to pick slot as host")
+            }
+
+            // create slot
+            const createSlot = await db.slot.create(
+
+                {   
+                    split: false,
+                    player1: req.body.userId,
+                    player2: null,
+                    auctionId: req.body.auctionId,
+                    selfOwn: true
+                
+                }
+            )
+            // update slot
+
+            let openSlot = firstOpenSpot(matchAuction.dataValues);
+
+            const updateSlot = await db.auction.update(
+                {
+                    [openSlot]: createSlot.dataValues.id},
+                {where: 
+                {
+                    id: req.body.auctionId
+                }}
+            )
+            return res.status(200).json({slot: updateSlot});
+            // res.status(200).json({res: sixSpotTaken(matchAuction.dataValues)})
+        })
+    }catch(err){
+        res.status(500).send({msg: err.message});
+    }
 }
 
 module.exports={
-    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1
+    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1, rollOver, addHost
 }
