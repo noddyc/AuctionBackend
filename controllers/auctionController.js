@@ -920,7 +920,7 @@ const joinAuction1 = async(req, res)=>{
                 where: {id: req.body.auctionId}
             })
             if(matchAuction === null){
-                throw new Error("auction not found");
+                throw new Error("Game not found");
             }
 
             // console.log(matchAuction.dataValues)
@@ -931,14 +931,14 @@ const joinAuction1 = async(req, res)=>{
             console.log(endTimeConverted)
 
             if(currentTime >= endTimeConverted){
-                console.log("auction is closed");
-                throw new Error("auction is closed")
+                console.log("Game is closed");
+                throw new Error("Game is closed")
             }
 
             // check owner
             if(matchAuction.dataValues.ownerId === req.body.userId){
-                console.log("can not join auction created by you");
-                throw new Error("can not join auction created by you")
+                console.log("can not join game created by you");
+                throw new Error("can not join game created by you")
             }
 
             // check slots
@@ -988,12 +988,8 @@ const joinAuction1 = async(req, res)=>{
                     )
                 };
             }else{
-                // split true
-                // there is no player1
-                  // there is player1
-                console.log(matchAuction.dataValues[`slot_${slot}`] )
                 if(matchAuction.dataValues[`slot_${slot}`] === null){
-            
+                    console.log("line 992")
                     let obj = {
                         split: true,
                         player1: req.body.userId,
@@ -1027,34 +1023,87 @@ const joinAuction1 = async(req, res)=>{
                         )
                     };   
                 }else{
-                    const slotId = matchAuction.dataValues[`slot_${slot}`];
-                    //update auction
-                    const update = await db.slot.update(
-                        {[`player2`]: req.body.userId},
-                        {where: {id: slotId}}
-                    )
-
-                    const matchBid = await db.biding.findOne({
-                        where: {userId:req.body.userId, auctionId: req.body.auctionId}
+                    // match for the slot 
+                    const slotMatch = await db.slot.findOne({
+                        where: {id: matchAuction.dataValues[`slot_${slot}`]}
                     })
-                
-                    if(!matchBid?.dataValues){
-                        const addBid = await db.user_auction.create(
-                            {   userId: req.body.userId,
-                                auctionId: req.body.auctionId,
-                                slot_number: req.body.slot}
+                    console.log(slotMatch.dataValues)
+                    // there is no player2
+                    if(slotMatch.dataValues.player2 === null){
+                        // console.log("line 1028")
+                        // return res.status(200).send("line 1028")
+                        const slotId = matchAuction.dataValues[`slot_${slot}`];
+                        //update auction
+                        const update = await db.slot.update(
+                            {[`player2`]: req.body.userId},
+                            {where: {id: slotId}}
                         )
-                    }; 
+                        // if findone not found then returns null;
+                        const matchBid = await db.biding.findOne({
+                            where: {userId:req.body.userId, auctionId: req.body.auctionId, slot_number: req.body.slot}
+                        })
+            
+                        // console.log("line is 1046")
+                        // console.log(matchBid)
+                        // console.log(matchBid.dataValues === null || matchBid.dataValues === undefined)
+                        if(matchBid===null || matchBid === undefiend){
+                            console.log("line 1047")
+                            const addBid = await db.biding.create(
+                                {   userId: req.body.userId,
+                                    auctionId: req.body.auctionId,
+                                    slot_number: req.body.slot}
+                            )
+                        }; 
 
-                    const matchUserAuction = await db.user_auction.findOne({
-                        where: {userId:req.body.userId, auctionId: req.body.auctionId}
-                    })
-                
-                    if(!matchUserAuction?.dataValues){
-                        const addUserAuction = await db.user_auction.create(
-                            {userId:req.body.userId, auctionId: req.body.auctionId}
+                        const matchUserAuction = await db.user_auction.findOne({
+                            where: {userId:req.body.userId, auctionId: req.body.auctionId}
+                        })
+                        console.log("line 1061")
+                        console.log(matchUserAuction)
+                        if(matchUserAuction === null || matchUserAuction === undefined){
+                            const addUserAuction = await db.user_auction.create(
+                                {userId:req.body.userId, auctionId: req.body.auctionId}
+                            )
+                        }
+                    }else{
+                        // const slotId = matchAuction.dataValues[`slot_${slot}`];
+                        // //update auction
+                        // console.log("line 1060")
+                        // return res.status(200).send("line 1060")
+                        const slotId = matchAuction.dataValues[`slot_${slot}`];
+                        //update auction
+                        const update = await db.slot.update(
+                            {[`player1`]: req.body.userId},
+                            {where: {id: slotId}}
                         )
-                    };  
+                        // if findone not found then returns null;
+                        const matchBid = await db.biding.findOne({
+                            where: {userId:req.body.userId, auctionId: req.body.auctionId, slot_number: req.body.slot}
+                        })
+            
+                        // console.log("line is 1046")
+                        // console.log(matchBid)
+                        // console.log(matchBid.dataValues === null || matchBid.dataValues === undefined)
+                        if(matchBid===null || matchBid === undefiend){
+                            console.log("line 1047")
+                            const addBid = await db.biding.create(
+                                {   userId: req.body.userId,
+                                    auctionId: req.body.auctionId,
+                                    slot_number: req.body.slot}
+                            )
+                        }; 
+
+                        const matchUserAuction = await db.user_auction.findOne({
+                            where: {userId:req.body.userId, auctionId: req.body.auctionId}
+                        })
+                        console.log("line 1061")
+                        console.log(matchUserAuction)
+                        if(matchUserAuction === null || matchUserAuction === undefined){
+                            const addUserAuction = await db.user_auction.create(
+                                {userId:req.body.userId, auctionId: req.body.auctionId}
+                            )
+                        }
+                    }
                 }
             }
             const auctionStatus = await db.auction.findOne({
@@ -1074,10 +1123,10 @@ const joinAuction1 = async(req, res)=>{
             }
             
             
-            return res.status(200).json();
+            return res.status(200).json("Successfully join game");
         })
     }catch(err){
-        res.status(500).send("auction joined successfully");
+        res.status(500).send("Failed to join game");
     }
 }
 
@@ -1093,7 +1142,7 @@ const rollOver = async(req, res) =>{
 }
 
 const addHost = async(req, res)=>{
-    
+
 }
 
 module.exports={
