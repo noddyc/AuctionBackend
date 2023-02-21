@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes)=>{
             defaultValue: false
         },
         status:{
-            type: DataTypes.ENUM("CLOSED", "IN_PROGRESS", "COMPLETED", "WAITING")
+            // type: DataTypes.ENUM("CLOSED", "IN_PROGRESS", "COMPLETED", "WAITING")
+            type: DataTypes.ENUM("OPEN_NOT_LIVE", "OPEN_LIVE", "WAITING_FOR_DRAW", "NO_WINNER_WINNER_NOTIFIED")
         },
     },
     {timestamps:false})

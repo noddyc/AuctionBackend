@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes)=>{
         },
         message:{
             type: DataTypes.STRING,
-            defaultValue: ""
+            dßefaultValue: ""
         },
     },
     {timestamps:false})

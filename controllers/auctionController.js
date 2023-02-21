@@ -126,6 +126,173 @@ const displayAuction = async(req, res)=>{
         if(ownerId){
             if(Array.isArray(statues)){
                 const result = await db.auction.findAll({
+                    include:[
+                        {
+                            model: db.slot,
+                            as: 'slot0',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                          },
+                        {
+                          model: db.slot,
+                          as: 'slot1',
+                          include:[
+                            {
+                                model: db.user,
+                                as: 'player_1',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            },
+                            {
+                                model: db.user,
+                                as: 'player_2',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            }
+                      ]
+                        },
+                        {
+                          model: db.slot,
+                          as: 'slot2',
+                          include:[
+                            {
+                                model: db.user,
+                                as: 'player_1',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            },
+                            {
+                                model: db.user,
+                                as: 'player_2',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            }
+                      ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot3',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot4',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot5',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot6',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot7',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot8',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                          },
+                        {
+                            model: db.slot,
+                            as: 'slot9',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.user,
+                            attributes: ['firstname', 'lastname', 'username']
+                        }
+                      ]
+                    ,
                     where:{
                         [Op.and]:{
                             status:{
@@ -140,12 +307,179 @@ const displayAuction = async(req, res)=>{
                 res.status(200).json(result)
             }else{
                 const result = await db.auction.findAll({
+                    include:[
+                        {
+                            model: db.slot,
+                            as: 'slot0',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                          },
+                        {
+                          model: db.slot,
+                          as: 'slot1',
+                          include:[
+                            {
+                                model: db.user,
+                                as: 'player_1',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            },
+                            {
+                                model: db.user,
+                                as: 'player_2',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            }
+                      ]
+                        },
+                        {
+                          model: db.slot,
+                          as: 'slot2',
+                          include:[
+                            {
+                                model: db.user,
+                                as: 'player_1',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            },
+                            {
+                                model: db.user,
+                                as: 'player_2',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            }
+                      ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot3',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot4',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot5',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot6',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot7',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot8',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                          },
+                        {
+                            model: db.slot,
+                            as: 'slot9',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.user,
+                            attributes: ['firstname', 'lastname', 'username']
+                        }
+                      ]
+                    ,
                     where:{
                         [Op.and]:{
                             status:{
                                 [Op.eq]: statues
                             },
-                            owneƒrId:{
+                            ownerId:{
                                 [Op.eq]: ownerId
                             }
                         }
@@ -158,6 +492,173 @@ const displayAuction = async(req, res)=>{
             // console.log(Array.isArray(statues));
             if(Array.isArray(statues)){
                 const result = await db.auction.findAll({
+                    include: [
+                        {
+                            model: db.slot,
+                            as: 'slot0',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                          },
+                        {
+                          model: db.slot,
+                          as: 'slot1',
+                          include:[
+                            {
+                                model: db.user,
+                                as: 'player_1',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            },
+                            {
+                                model: db.user,
+                                as: 'player_2',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            }
+                      ]
+                        },
+                        {
+                          model: db.slot,
+                          as: 'slot2',
+                          include:[
+                            {
+                                model: db.user,
+                                as: 'player_1',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            },
+                            {
+                                model: db.user,
+                                as: 'player_2',
+                                attributes: ['firstname', 'lastname', 'username'],
+                            }
+                      ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot3',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot4',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot5',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot6',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot7',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot8',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                          },
+                        {
+                            model: db.slot,
+                            as: 'slot9',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.user,
+                            attributes: ['firstname', 'lastname', 'username']
+                        }
+                      ]
+                    ,
                     where:{
                         status: {[Op.in]: statues}
                     }
@@ -165,6 +666,167 @@ const displayAuction = async(req, res)=>{
                 res.status(200).json(result)
             }else{
                 const result = await db.auction.findAll({
+                    include: [
+                        {
+                            model: db.slot,
+                            as: 'slot0',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                    },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                            ]
+                          },
+                        {
+                          model: db.slot,
+                          as: 'slot1',
+                          include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                          model: db.slot,
+                          as: 'slot2',
+                          include:[
+                            {
+                            model: db.user,
+                            attributes: ['firstname', 'lastname', 'username']
+                            }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot3',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot4',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot5',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot6',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot7',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.slot,
+                            as: 'slot8',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                          },
+                        {
+                            model: db.slot,
+                            as: 'slot9',
+                            include:[
+                                {
+                                    model: db.user,
+                                    as: 'player_1',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                },
+                                {
+                                    model: db.user,
+                                    as: 'player_2',
+                                    attributes: ['firstname', 'lastname', 'username'],
+                                }
+                          ]
+                        },
+                        {
+                            model: db.user,
+                            attributes: ['firstname', 'lastname', 'username']
+                        }
+                      ]
+                    ,
                     where:{
                         status: {[Op.eq]: statues}
                     }
@@ -237,9 +899,203 @@ const createAuction = async(req, res)=>{
     //     restart: req.body.restart || false,//
 
     // }
+}
 
+function checkSlotsFilled(dataValues){
+    const slotArr = ['slot_0','slot_1','slot_2','slot_3','slot_4','slot_5','slot_6','slot_7','slot_8','slot_9'];
+    let count = 0;
+    for(let i = 0; i < slotArr.length; i++){
+        if(dataValues[slotArr[i]] !== null){
+            count++;
+        }
+    }
+    return count;
+}
+
+const joinAuction1 = async(req, res)=>{
+    try{
+        const result = await sequelize.transaction(async ()=>{
+            // let id = req.body.auctionId;
+            const matchAuction = await db.auction.findOne({
+                where: {id: req.body.auctionId}
+            })
+            if(matchAuction === null){
+                throw new Error("auction not found");
+            }
+
+            // console.log(matchAuction.dataValues)
+
+            let currentTime = moment(new Date(), 'UTC');
+            let endTime = moment(matchAuction.dataValues.end_time)
+            let endTimeConverted = endTime.subtract(6, 'minutes').tz();
+            console.log(endTimeConverted)
+
+            if(currentTime >= endTimeConverted){
+                console.log("auction is closed");
+                throw new Error("auction is closed")
+            }
+
+            // check owner
+            if(matchAuction.dataValues.ownerId === req.body.userId){
+                console.log("can not join auction created by you");
+                throw new Error("can not join auction created by you")
+            }
+
+            // check slots
+            // if(matchAuction.dataValues.slotsOpen === 0){
+            //     console.log("auction is full");
+            //     throw new Error("auction is full");
+            // }
+
+            let split = req.body.split;
+            let slot = req.body.slot;
+            console.log(split);
+            // check slot is filled or not
+            
+            // create slot
+            if(split == 'false'){
+                console.log('here')
+                let obj = {
+                    split: false,
+                    player1: req.body.userId,
+                    player2: null,
+                    auctionId: req.body.auctionId
+                }
+
+                let newBid = {
+                    userId: req.body.userId,
+                    auctionId: req.body.auctionId,
+                    slot_number: req.body.slot
+                }
+                
+                const insertion = await db.slot.create(obj);
+                //update auction
+                const update = await db.auction.update(
+                    {[`slot_${slot}`]: insertion.id},
+                    {where: {id: req.body.auctionId}}
+                )
+
+                const addNewBid = await db.biding.create(newBid);
+
+                            // add a relationship to user auction
+                const matchUserAuction = await db.user_auction.findOne({
+                    where: {userId:req.body.userId, auctionId: req.body.auctionId}
+                })
+            
+                if(!matchUserAuction?.dataValues){
+                    const addUserAuction = await db.user_auction.create(
+                        {userId:req.body.userId, auctionId: req.body.auctionId}
+                    )
+                };
+            }else{
+                // split true
+                // there is no player1
+                  // there is player1
+                console.log(matchAuction.dataValues[`slot_${slot}`] )
+                if(matchAuction.dataValues[`slot_${slot}`] === null){
+            
+                    let obj = {
+                        split: true,
+                        player1: req.body.userId,
+                        player2: null,
+                        auctionId: req.body.auctionId
+                    }
+
+                    let newBid = {
+                        userId: req.body.userId,
+                        auctionId: req.body.auctionId,
+                        slot_number: req.body.slot
+                    }
+
+                    const insertion = await db.slot.create(obj);
+                    //update auction
+                    const update = await db.auction.update(
+                        {[`slot_${slot}`]: insertion.id},
+                        {where: {id: req.body.auctionId}}
+                    )
+    
+                    const addNewBid = await db.biding.create(newBid);
+    
+                                // add a relationship to user auction
+                    const matchUserAuction = await db.user_auction.findOne({
+                        where: {userId:req.body.userId, auctionId: req.body.auctionId}
+                    })
+                
+                    if(!matchUserAuction?.dataValues){
+                        const addUserAuction = await db.user_auction.create(
+                            {userId:req.body.userId, auctionId: req.body.auctionId}
+                        )
+                    };   
+                }else{
+                    const slotId = matchAuction.dataValues[`slot_${slot}`];
+                    //update auction
+                    const update = await db.slot.update(
+                        {[`player2`]: req.body.userId},
+                        {where: {id: slotId}}
+                    )
+
+                    const matchBid = await db.biding.findOne({
+                        where: {userId:req.body.userId, auctionId: req.body.auctionId}
+                    })
+                
+                    if(!matchBid?.dataValues){
+                        const addBid = await db.user_auction.create(
+                            {   userId: req.body.userId,
+                                auctionId: req.body.auctionId,
+                                slot_number: req.body.slot}
+                        )
+                    }; 
+
+                    const matchUserAuction = await db.user_auction.findOne({
+                        where: {userId:req.body.userId, auctionId: req.body.auctionId}
+                    })
+                
+                    if(!matchUserAuction?.dataValues){
+                        const addUserAuction = await db.user_auction.create(
+                            {userId:req.body.userId, auctionId: req.body.auctionId}
+                        )
+                    };  
+                }
+            }
+            const auctionStatus = await db.auction.findOne({
+                where: {id: req.body.auctionId}
+            })
+            let count = checkSlotsFilled(auctionStatus.dataValues);
+            if(count >= 7){
+                const update = await db.auction.update(
+                    {status: 'OPEN_LIVE'},
+                    {where: {id: req.body.auctionId}}
+                )
+            }else{
+                const update = await db.auction.update(
+                    {status: 'OPEN_NOT_LIVE'},
+                    {where: {id: req.body.auctionId}}
+                )
+            }
+            
+            
+            return res.status(200).json();
+        })
+    }catch(err){
+        res.status(500).send("auction joined successfully");
+    }
+}
+
+const rollOver = async(req, res) =>{
+    //check status and winner
+    try{
+        const result = await db.auction.findOne({
+            where: {id: req.body.auctionId}
+        })
+    }catch(err){
+
+    }
+}
+
+const addHost = async(req, res)=>{
+    
 }
 
 module.exports={
-    addAuction, joinAuction, cancelAuction, displayAuction, createAuction
+    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1
 }

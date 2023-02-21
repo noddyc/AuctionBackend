@@ -47,20 +47,20 @@ db.notification.belongsTo(db.user, {foreignKey: 'userId', onDelete: 'cascade' })
 db.biding.belongsTo(db.user, {foreignKey: 'userId',  onDelete: 'cascade' })
 db.biding.belongsTo(db.auction, {foreignKey: 'auctionId',  onDelete: 'cascade' })
 
-db.slot.belongsTo(db.user,{foreignKey: 'player1', onDelete: 'cascade'})
-db.slot.belongsTo(db.user,{foreignKey: 'player2', onDelete: 'cascade'})
+db.slot.belongsTo(db.user,{foreignKey: 'player1', as:'player_1', onDelete: 'cascade'})
+db.slot.belongsTo(db.user,{foreignKey: 'player2', as:'player_2', onDelete: 'cascade'})
 db.slot.belongsTo(db.auction, { foreignKey: 'auctionId', onDelete: 'cascade'})
 
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_0', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_1', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_2', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_3', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_4', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_5', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_6', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_7', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_8', onDelete: 'cascade'})
-db.auction.belongsTo(db.slot, {foreignKey: 'slot_9', onDelete: 'cascade'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_0', as:'slot0'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_1', as:'slot1'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_2',  as:'slot2'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_3',  as:'slot3'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_4',  as:'slot4'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_5',  as:'slot5'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_6',  as:'slot6'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_7',  as:'slot7'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_8',  as:'slot8'})
+db.auction.belongsTo(db.slot, {foreignKey: 'slot_9',  as:'slot9'})
 
 db.notification.belongsTo(db.auction, {foreignKey: 'auctionId', onDelete: 'cascade' })
 db.notification.belongsTo(db.user, {foreignKey:'userId', onDelete: 'cascade'})
@@ -99,7 +99,7 @@ function generate(){
     let month = '01'
     let winningArr = [];
     for(let i=0; i <= 20; i++){
-        let curDate = year+'-'+month+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00'
+        let curDate = year+'-'+month+'-'+getRandomInt(1,25)+' '+12+':'+40+':00'
         winningArr.push({number: getRandomInt(0,9), postTime: curDate})
     }
 
@@ -118,17 +118,19 @@ function generate(){
       ];
     let product_price = "210.01"
     let start_time = moment.tz("2022-01-08T08:00:00","YYYY-MM-DDTHH:mm:ss", 'UTC').format();
-    let end_time = moment.tz("2022-01-08T13:00:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format();
-    let status_arr = ["CLOSED", "IN_PROGRESS", "COMPLETED",
-    "CANCELED", "WAITING"]
+
+    let end_time_arr = [moment.tz("2022-03-08T12:40:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format(),
+     moment.tz("2022-03-08T21:22:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()]
+
+    let status_arr = ["OPEN_NOT_LIVE", "OPEN_LIVE", "WAITING_FOR_DRAW", "NO_WINNER_WINNER_NOTIFIED"]
     let price_arr = ['212.02', '2132.12', '65.90', '434.12', '769.03']
     
     // moment(year+'-'+getRandomInt(2,9)+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00', 'UTC').format()
     for(let i = 0; i < 500; i++){
         auctionArr.push({ownerId: getRandomInt(1,20), product_name: product_name_arr[getRandomInt(0,8)], 
             product_description: product_description_arr[getRandomInt(0,4)],
-            product_price: price_arr[getRandomInt(0,4)], status: status_arr[getRandomInt(0,4)],
-            start_time: start_time, end_time: end_time
+            product_price: price_arr[getRandomInt(0,4)], status: status_arr[getRandomInt(0,3)],
+            start_time: start_time, end_time: end_time_arr[getRandomInt(0,1)]
          })
     }
     db.auction.bulkCreate(auctionArr).then(()=>{console.log("bulk auctions created")})
