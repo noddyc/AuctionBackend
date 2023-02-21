@@ -11,16 +11,14 @@ const displayBid = async (req, res)=>{
             }, include: [{
                     model:db.auction,
                     required:true,
-                    // include:[
-                    //     {
-                    //         model: db.winning_number,
-                    //         required: true,
-                    //         attributes:[
-                    //             'postTime','number'
-                    //         ]
-                    //     }]
-                            }]
-                        })
+                    include:[
+                        {
+                            model: db.user,
+                            attributes: ['firstname', 'lastname', 'username']
+                        }
+                    ]
+                    }]
+            })
         res.status(200).send(result);
     }catch(err){
         console.log(err.message);
