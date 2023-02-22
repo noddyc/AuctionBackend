@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-
+const Server = require('socket.io')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -37,6 +37,8 @@ app.use('/bid', bidRouter)
 app.get('/', (req, res) =>{
     res.send("hello");
 })
+
+
 
 app.listen(9001, ()=>{
     console.log("running on port 9001")
