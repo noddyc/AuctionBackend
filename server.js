@@ -85,7 +85,35 @@ io.on('connection', (socket)=>{{
       type:"RETRACTION_SEND", message:"Hello", auctionId: 4, senderId: 5, receiverId: receiverId, response: "NONE", viewed: false
     }
     try{
-      const dbUpdate = await db.notification.create(obj)
+          //update
+      const result = await db.notification.update(
+          {response: response==="ACCEPT"?"ACCEPT":"DECLINE" },
+          {
+              where:{
+                  id: id
+              }
+          }
+      )
+      // find match
+      const matchNote = await db.notification.findOne(
+        {
+            where: {
+                id: id
+            }
+        }
+      )
+
+      // create confirm back msg to sender
+      let noteSenderId = matchNote.dataValues.senderId;
+      let noteReceiverId = matchNote.dataValues.receiverId;
+      let obj = response==="ACCEPT"?
+      {
+          type:"RETRACTION_RECEIVE", message: `${receiverId} confirm your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: "NONE", viewed: false
+      }:
+      {
+          type:"RETRACTION_RECEIVE", message: `${receiverId} decline your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: "NONE", viewed: false
+      }
+      const sendBackMsg = await db.notification.create(obj);
       if(receiver !== null){
         console.log("I am bere2")
         console.log(onlineUsers)
