@@ -8,7 +8,7 @@ const displayNotifications = async (req, res)=>{
         const result = await db.notification.findAll({
             where:{
                 receiverId: id,
-                decline: false
+                response :"NONE"
             }
             })
         res.status(200).send(result);

@@ -8,12 +8,13 @@ module.exports = (sequelize, DataTypes)=>{
             type: DataTypes.STRING,
             defaultValue: ""
         },
-        handled:{
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
+        response:{
+            type: DataTypes.ENUM("ACCEPT", "DECLINE","NONE"),
+            defaultValue: "NONE"
         },
         viewed:{
             type: DataTypes.BOOLEAN,
+            allowNull:false,
             defaultValue: false
         }
     },
