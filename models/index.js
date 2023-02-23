@@ -42,8 +42,6 @@ db.auction.belongsToMany(db.user, {as: 'auctionId', through: db.user_auction, fo
 db.auction.belongsTo(db.user, {foreignKey: 'ownerId',  onDelete: 'cascade' })
 db.auction.belongsTo(db.winning_number, {foreignKey: 'winnning_number', onDelete: 'cascade'})
 
-db.notification.belongsTo(db.user, {foreignKey: 'userId', onDelete: 'cascade' })
-
 db.biding.belongsTo(db.user, {foreignKey: 'userId',  onDelete: 'cascade' })
 db.biding.belongsTo(db.auction, {foreignKey: 'auctionId',  onDelete: 'cascade' })
 
@@ -63,7 +61,8 @@ db.auction.belongsTo(db.slot, {foreignKey: 'slot_8',  as:'slot8'})
 db.auction.belongsTo(db.slot, {foreignKey: 'slot_9',  as:'slot9'})
 
 db.notification.belongsTo(db.auction, {foreignKey: 'auctionId', onDelete: 'cascade' })
-db.notification.belongsTo(db.user, {foreignKey:'userId', onDelete: 'cascade'})
+db.notification.belongsTo(db.user, {foreignKey:'senderId', onDelete: 'cascade'})
+db.notification.belongsTo(db.user, {foreignKey:'receiverId', onDelete: 'cascade'})
 // generate()
 
 //

@@ -1,14 +1,21 @@
 module.exports = (sequelize, DataTypes)=>{
     const notification = sequelize.define("Notification",{
         type:{
-            type: DataTypes.ENUM("NUMBER_DECLARED", "GAME_ALIVE", "GAME_NOT_ALIVE",
-            "GAME_ROLLOVER", "GAME_NO_WINNER", "GAME_OPEN"),
+            type: DataTypes.ENUM("RETRACTION_SEND", "RETRACTION_RECEIVE"),
             allowNull:false
         },
         message:{
             type: DataTypes.STRING,
-            dßefaultValue: ""
+            defaultValue: ""
         },
+        handled:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        viewed:{
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }
     },
     {timestamps:false})
     return notification
