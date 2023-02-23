@@ -3,6 +3,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const {sequelize, db} = require("./models")
 
 const {Sequelize, DataTypes} = require('sequelize');
 const userRouter = require('./routes/userRouter')
@@ -74,13 +75,26 @@ io.on('connection', (socket)=>{{
     console.log(onlineUsers);
   });
 
-  socket.on("increaseCount", ({receiverId})=>{
+  // increase count in
+  // first do it in db,
+  // then emit the event to client
+  socket.on("increaseCount", async ({receiverId, response, id})=>{
     const receiver = getUser(receiverId);
-    if(receiver !== null){
-      console.log(onlineUsers)
-      io.to(receiver).emit(
-        "increaseNotifyCount", "hello"
-      )
+    console.log(receiverId)
+    let obj = {
+      type:"RETRACTION_SEND", message:"Hello", auctionId: 4, senderId: 5, receiverId: receiverId, response: "NONE", viewed: false
+    }
+    try{
+      const dbUpdate = await db.notification.create(obj)
+      if(receiver !== null){
+        console.log("I am bere2")
+        console.log(onlineUsers)
+        io.to(receiver).emit(
+          "increaseNotifyCount", obj
+        )
+      }
+    }catch(err){
+      console.log(err.message)
     }
   } )
 

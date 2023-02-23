@@ -2,14 +2,14 @@ module.exports = (sequelize, DataTypes)=>{
     const notification = sequelize.define("Notification",{
         type:{
             type: DataTypes.ENUM("RETRACTION_SEND", "RETRACTION_RECEIVE"),
-            allowNull:false
+            allowNull: false,
         },
         message:{
             type: DataTypes.STRING,
             defaultValue: ""
         },
         response:{
-            type: DataTypes.ENUM("ACCEPT", "DECLINE","NONE"),
+            type: DataTypes.ENUM("ACCEPT", "DECLINE", "NONE"),
             defaultValue: "NONE"
         },
         viewed:{

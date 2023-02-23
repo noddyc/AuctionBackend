@@ -17,6 +17,85 @@ const displayNotifications = async (req, res)=>{
     }
 }
 
+const replyNotifications = async (req, res)=>{
+    // implement in transaction
+
+    try{
+        const result = await sequelize.transaction(async () =>{
+                //update
+                const result = await db.notification.update(
+                    {response: req.body.response==="ACCEPT"?"ACCEPT":"DECLINE" },
+                    {
+                        where:{
+                            id: req.body.id
+                        }
+                    }
+                )
+                // find match
+                const matchNote = await db.notification.findOne(
+                    {
+                        where: {
+                            id: req.body.id
+                        }
+                    }
+                )
+
+                // create confirm back msg to sender
+                let senderId = matchNote.dataValues.senderId;
+                let receiverId = matchNote.dataValues.receiverId;
+                let obj = req.body.response==="ACCEPT"?
+                {
+                    type:"RETRACTION_RECEIVE", message: `${receiverId} confirm your retraction request`, auctionId: 4, senderId: receiverId, receiverId: senderId, response: "NONE", viewed: false
+                }:
+                {
+                    type:"RETRACTION_RECEIVE", message: `${receiverId} decline your retraction request`, auctionId: 4, senderId: receiverId, receiverId: senderId, response: "NONE", viewed: false
+                }
+                const sendBackMsg = await db.notification.create(obj);
+
+                return res.status(200).send(sendBackMsg);
+            })
+        }
+        catch(err){
+            console.log(err.message);
+        }
+}
+
+const updateNotifications = async (req, res) =>{
+    let list = req.body.list;
+    console.log(Array.isArray(list));
+    try{
+        if(Array.isArray(list)){
+            const result = await db.notification.update({
+                viewed: true
+                }
+                ,
+                {where:{
+                    id:{
+                        [Op.in]: list
+                    },
+                }
+            })
+            return res.status(200).send(result);
+        }else{
+            const result = await db.notification.update({
+                viewed: true
+                }
+                ,
+                {where:{
+                    id:{
+                        [Op.eq]: list
+                    },
+                }
+            })
+            return res.status(200).send(result);
+        }
+    }catch(err){
+        res.status(500).send(err.message);
+    }
+}
+
+
+
 module.exports={
-    displayNotifications
+    displayNotifications, updateNotifications, replyNotifications
 }
