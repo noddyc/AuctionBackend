@@ -55,9 +55,9 @@ const addNewUser = (userId, socketId) => {
 };
 
 
-const removeUser = (socketId) => {
-  onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
-};
+// const removeUser = (socketId) => {
+//   onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
+// };
 
 const getUser = (userId) => {
   return onlineUsers.get(userId) || null;
@@ -77,6 +77,7 @@ io.on('connection', (socket)=>{{
   socket.on("increaseCount", ({receiverId})=>{
     const receiver = getUser(receiverId);
     if(receiver !== null){
+      console.log(onlineUsers)
       io.to(receiver).emit(
         "increaseNotifyCount", "hello"
       )
@@ -84,10 +85,10 @@ io.on('connection', (socket)=>{{
   } )
 
 
-  socket.on("disconnect", ()=>{
-    removeUser(socket.id)
-    console.log("User disconnected")
-  })
+  // socket.on("disconnect", ()=>{
+  //   removeUser(socket.id)
+  //   console.log("User disconnected")
+  // })
 }})
 
 server.listen(9001, ()=>{
