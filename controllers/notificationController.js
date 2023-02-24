@@ -17,6 +17,32 @@ const displayNotifications = async (req, res)=>{
     }
 }
 
+const createNotifications = async (req, res) =>{
+    try{
+        let senderId = req.body.senderId
+        let receiverId = req.body.receiverId
+        let slot = req.body.slot
+        let auctionId = req.body.auctionId
+
+        let obj = {
+            type: "RETRACTION_SEND", 
+            message: `${senderId} request retraction on slot ${slot}
+            of auction with id ${auctionId}`,
+            auctionId: auctionId,
+            senderId: senderId,
+            receiverId: receiverId,
+            
+
+        }
+
+
+
+
+
+    }
+
+}
+
 const replyNotifications = async (req, res)=>{
     // implement in transaction
 
