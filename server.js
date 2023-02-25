@@ -75,15 +75,34 @@ io.on('connection', (socket)=>{{
     console.log(onlineUsers);
   });
 
+  socket.on("createNotification", async({name, auctionId, slot, senderId, receiverId})=>{
+    const receiver = getUser(receiverId);
+    let obj = {
+      type: "RETRACTION_SEND", message: `Player ${name} (id: ${senderId}) request retraction on slot ${slot} of game with id ${auctionId}`,
+      auctionId: auctionId, senderId: senderId, receiverId: receiverId, 
+    }
+    try{
+      const result = await db.notification.create(obj);
+      console.log(result.dataValues)
+      if(receiver !== null){
+        console.log("I am bere2")
+        console.log(onlineUsers)
+        io.to(receiver).emit(
+          "increaseNotifyCount", result.dataValues
+        )
+      }
+    }catch(err){
+      console.log(err.messagr)
+    }
+  })
   // increase count in
   // first do it in db,
   // then emit the event to client
   socket.on("increaseCount", async ({receiverId, response, id})=>{
+    console.log(receiverId+ " "+response+" "+id)
+    console.log("I am here in increase count")
     const receiver = getUser(receiverId);
     console.log(receiverId)
-    let obj = {
-      type:"RETRACTION_SEND", message:"Hello", auctionId: 4, senderId: 5, receiverId: receiverId, response: "NONE", viewed: false
-    }
     try{
           //update
       const result = await db.notification.update(
@@ -108,10 +127,10 @@ io.on('connection', (socket)=>{{
       let noteReceiverId = matchNote.dataValues.receiverId;
       let obj = response==="ACCEPT"?
       {
-          type:"RETRACTION_RECEIVE", message: `${receiverId} confirm your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: "NONE", viewed: false
+          type:"RETRACTION_RECEIVE", message: `${receiverId} confirm your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }:
       {
-          type:"RETRACTION_RECEIVE", message: `${receiverId} decline your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: "NONE", viewed: false
+          type:"RETRACTION_RECEIVE", message: `${receiverId} decline your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }
       const sendBackMsg = await db.notification.create(obj);
       if(receiver !== null){
@@ -125,6 +144,7 @@ io.on('connection', (socket)=>{{
       console.log(err.message)
     }
   } )
+
 
 
   // socket.on("disconnect", ()=>{

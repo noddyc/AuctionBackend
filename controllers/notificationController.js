@@ -26,19 +26,17 @@ const createNotifications = async (req, res) =>{
 
         let obj = {
             type: "RETRACTION_SEND", 
-            message: `${senderId} request retraction on slot ${slot}
-            of auction with id ${auctionId}`,
+            message: `player ${senderId} request retraction on slot ${slot} of auction with id ${auctionId}`,
             auctionId: auctionId,
             senderId: senderId,
             receiverId: receiverId,
-            
-
+            response: "NONE",
+            viewed: false
         }
-
-
-
-
-
+        const result = await db.notification.create(obj);
+        res.status(200).send(result);
+    }catch(err){
+        console.log(err.message);
     }
 
 }
@@ -123,5 +121,5 @@ const updateNotifications = async (req, res) =>{
 
 
 module.exports={
-    displayNotifications, updateNotifications, replyNotifications
+    displayNotifications, updateNotifications, replyNotifications,createNotifications
 }
