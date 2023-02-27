@@ -35,6 +35,7 @@ db.notification = require('./notification')(sequelize, DataTypes)
 db.biding = require('./biding')(sequelize, DataTypes)
 db.winning_number = require('./winning_number')(sequelize, DataTypes)
 db.slot = require('./slot')(sequelize, DataTypes)
+db.image = require('./image')(sequelize, DataTypes)
 
 db.user.belongsToMany(db.auction, {as:'userId', through: db.user_auction, foreignKey: 'userId'})
 db.auction.belongsToMany(db.user, {as: 'auctionId', through: db.user_auction, foreignKey: 'auctionId'})
@@ -64,6 +65,7 @@ db.notification.belongsTo(db.auction, {foreignKey: 'auctionId', onDelete: 'casca
 db.notification.belongsTo(db.user, {foreignKey:'senderId', onDelete: 'cascade'})
 db.notification.belongsTo(db.user, {foreignKey:'receiverId', onDelete: 'cascade'})
 // generate()
+db.image.belongsTo(db.auction, {foreignKey: 'auctionId',onDelete:'cascade'})
 
 //
 db.sequelize.sync({force: false}).then(()=>console.log("DB Sync completed"))

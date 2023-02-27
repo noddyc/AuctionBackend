@@ -12,6 +12,11 @@ const winningNumberRouter = require('./routes/winningNumberRouter');
 const bidRouter = require('./routes/bidRouter')
 const notificationRouter = require('./routes/notificationRouter')
 
+const multer = require('multer')
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
 const app = express()
 app.use(cors());
 app.use(bodyParser.json());
@@ -36,9 +41,23 @@ app.use('/auction', auctionRouter)
 app.use('/user', userRouter)
 app.use('/bid', bidRouter)
 app.use('/notifications', notificationRouter)
+
+app.post('/api/posts', upload.array('image'), async (req, res) => {
+  const file = req.files
+  const id = req.body.auctionId[0]
+  const buffers = file.map((f)=>{
+    return {data: f.buffer, auctionId: id}
+  })
+  const result = await db.image.bulkCreate(buffers);
+  
+  res.status(200).send("ok")
+})
+
+
 app.get('/', (req, res) =>{
     res.send("hello");
 })
+
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {cors:{origin:"*"}})

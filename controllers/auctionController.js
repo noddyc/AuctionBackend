@@ -3,10 +3,19 @@ const moment = require("moment")
 const {Op} = require('sequelize');
 const e = require("express");
 
+
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+
+
+
+const getImage = async(req,res)=>{
+
+
 }
 
 const addAuction= async (req, res)=>{
@@ -18,7 +27,7 @@ const addAuction= async (req, res)=>{
         product_description: req.body.product_description,//
         start_time: req.body.start_time,//
         end_time: req.body.end_time,//
-        status: req.body.status,//
+        status: req.body.status || "OPEN_NOT_LIVE",
         winning_number: req.body.winning_number || null, //
         restart: req.body.restart || false,//
         // slotsOpen: req.body.slots || 10,//
@@ -1349,5 +1358,5 @@ const addHost = async(req, res)=>{
 }
 
 module.exports={
-    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1, rollOver, addHost
+    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1, rollOver, addHost, getImage
 }
