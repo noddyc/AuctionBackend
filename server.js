@@ -4,13 +4,14 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const {sequelize, db} = require("./models")
-
 const {Sequelize, DataTypes} = require('sequelize');
 const userRouter = require('./routes/userRouter')
 const auctionRouter = require('./routes/auctionRouter');
 const winningNumberRouter = require('./routes/winningNumberRouter');
 const bidRouter = require('./routes/bidRouter')
 const notificationRouter = require('./routes/notificationRouter')
+const axios = require('axios')
+const qs = require('qs')
 
 const multer = require('multer')
 
@@ -88,15 +89,12 @@ io.on('connection', (socket)=>{{
   socket.on("createNotification", async({name, auctionId, slot, senderId, receiverId})=>{
     const receiver = getUser(receiverId);
     let obj = {
-      type: "RETRACTION_SEND", message: `Player ${name} (id: ${senderId}) request retraction on slot ${slot} of game with id ${auctionId}`,
+      type: "RETRACTION_SEND", message: `Player ${name} (id: ${senderId}) request retraction of game with id ${auctionId} on slot ${slot}`,
       auctionId: auctionId, senderId: senderId, receiverId: receiverId, 
     }
     try{
       const result = await db.notification.create(obj);
-      console.log(result.dataValues)
       if(receiver !== null){
-        console.log("I am bere2")
-        console.log(onlineUsers)
         io.to(receiver).emit(
           "increaseNotifyCount", result.dataValues
         )
@@ -108,8 +106,9 @@ io.on('connection', (socket)=>{{
   // increase count in
   // first do it in db,
   // then emit the event to client
-  socket.on("increaseCount", async ({receiverId, response, id})=>{
-    console.log(receiverId+ " "+response+" "+id)
+  
+  socket.on("increaseCount", async ({receiverId, response, id, slot, auctionId})=>{
+    console.log(receiverId+ " "+response+" "+id+" " + slot)
     console.log("I am here in increase count")
     const receiver = getUser(receiverId);
     console.log(receiverId)
@@ -131,6 +130,29 @@ io.on('connection', (socket)=>{{
             }
         }
       )
+
+      // delete bid
+      let data = qs.stringify({
+      'auctionId': auctionId,
+      'userId': receiverId,
+      'slot': slot,
+      });
+
+      let config = {
+        method: 'post',
+        url: `http://localhost:9001/bid/withdrawBid1`,
+        headers: { 
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data : data
+      };
+      axios(config).then((response) => {
+        console.log("able to delete")
+        console.log(JSON.stringify(response.data));
+      }).catch((error) => {
+        throw new Error("Failed to delete selection")
+
+      })
 
       // create confirm back msg to sender
       let noteSenderId = matchNote.dataValues.senderId;
