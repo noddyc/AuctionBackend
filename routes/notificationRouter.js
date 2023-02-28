@@ -5,4 +5,5 @@ notificationRouter.post('/displayNotifications', notificationController.displayN
 notificationRouter.post('/updateNotifications', notificationController.updateNotifications)
 notificationRouter.post('/confirmNotifications', notificationController.replyNotifications)
 notificationRouter.post('/createNotifications', notificationController.createNotifications)
+notificationRouter.post('/deleteNotifications', notificationController.deleteNotifications)
 module.exports = notificationRouter

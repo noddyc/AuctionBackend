@@ -34,7 +34,6 @@ app.use(
     })
   );
 
-  // "https://heartfelt-moxie-dfa521.netlify.app"
 
 app.use('/winningNum', winningNumberRouter)
 app.use('/auction', auctionRouter)
@@ -67,24 +66,13 @@ const io = require('socket.io')(server, {cors:{origin:"*"}})
 let onlineUsers = new Map();
 
 
-// const addNewUser = (userId, socketId) => {
-//   !onlineUsers.some((user) => user.userId === userId) &&
-//     onlineUsers.push({ userId, socketId });
-// };
-
-
 const addNewUser = (userId, socketId) => {
   onlineUsers.set(userId, socketId)
 };
 
 
-// const removeUser = (socketId) => {
-//   onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
-// };
-
 const getUser = (userId) => {
   return onlineUsers.get(userId) || null;
-  // return onlineUsers.find((user) => user.userId=== userId);
 };
 
 io.on('connection', (socket)=>{{
@@ -149,10 +137,10 @@ io.on('connection', (socket)=>{{
       let noteReceiverId = matchNote.dataValues.receiverId;
       let obj = response==="ACCEPT"?
       {
-          type:"RETRACTION_RECEIVE", message: `${receiverId} confirm your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host ${receiverId} confirm your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }:
       {
-          type:"RETRACTION_RECEIVE", message: `${receiverId} decline your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host ${receiverId} decline your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }
       const sendBackMsg = await db.notification.create(obj);
       if(receiver !== null){

@@ -11,7 +11,7 @@ const displayNotifications = async (req, res)=>{
                 response :"NONE"
             }
             })
-        res.status(200).send(result);
+        res.status(200).json(result);
     }catch(err){
         console.log(err.message);
     }
@@ -34,7 +34,7 @@ const createNotifications = async (req, res) =>{
             viewed: false
         }
         const result = await db.notification.create(obj);
-        res.status(200).send(result);
+        res.status(200).json(result);
     }catch(err){
         console.log(err.message);
     }
@@ -76,7 +76,7 @@ const replyNotifications = async (req, res)=>{
                 }
                 const sendBackMsg = await db.notification.create(obj);
 
-                return res.status(200).send(sendBackMsg);
+                return res.status(200).json(sendBackMsg);
             })
         }
         catch(err){
@@ -94,7 +94,7 @@ const updateNotifications = async (req, res) =>{
                 }
                 ,
                 {where:{
-                    id:{
+                    receiverId:{
                         [Op.in]: list
                     },
                 }
@@ -106,20 +106,36 @@ const updateNotifications = async (req, res) =>{
                 }
                 ,
                 {where:{
-                    id:{
+                    receiverId:{
                         [Op.eq]: list
                     },
                 }
             })
-            return res.status(200).send(result);
+            return res.status(200).json(result);
         }
     }catch(err){
         res.status(500).send(err.message);
     }
 }
 
+const deleteNotifications = async (req, res)=>{
+    let id = req.body.id;
+    try{
+        const result = await db.notification.destroy(
+            {where: {
+                id: id
+            }
+            }
+        )
+        return res.status(200).json(result)
+    }catch(err){
+        res.status(500).send(err.message)
+    }
+
+}
+
 
 
 module.exports={
-    displayNotifications, updateNotifications, replyNotifications,createNotifications
+    displayNotifications, updateNotifications, replyNotifications, createNotifications, deleteNotifications
 }
