@@ -1,6 +1,7 @@
 const dbConfig = require('../config/dbConfig.js')
 const {Sequelize, DataTypes, VIRTUAL} = require('sequelize');
 const moment = require('moment')
+const { uniqueNamesGenerator, adjectives, colors, animals } = require('unique-names-generator');
 
 const sequelize = new Sequelize(
     dbConfig.DB,
@@ -64,10 +65,13 @@ db.auction.belongsTo(db.slot, {foreignKey: 'slot_9',  as:'slot9'})
 db.notification.belongsTo(db.auction, {foreignKey: 'auctionId', onDelete: 'cascade' })
 db.notification.belongsTo(db.user, {foreignKey:'senderId', onDelete: 'cascade'})
 db.notification.belongsTo(db.user, {foreignKey:'receiverId', onDelete: 'cascade'})
-// generate()
+
+// db.image.belongsTo(db.auction, {as:'i_Id', through: db.image_auction, foreignKey: 'aId'})
+// db.auction.belongsToMany(db.image,{as: 'a_Id', through: db.image_auction, foreignKey: 'id'})
 db.image.belongsTo(db.auction, {foreignKey: 'auctionId',onDelete:'cascade'})
 
-//
+
+// generate()
 db.sequelize.sync({force: false}).then(()=>console.log("DB Sync completed"))
 
 module.exports = {db, sequelize};
@@ -81,13 +85,13 @@ function generate(){
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    let firstname = "Harry"
-    let lastname = "Potter"
     let password = "2446592Ny!"
     let imagepath = ""
     let address = "1 Lomb Memorial Dr, Rochester, NY 14623"
     let arr = []
     for(let i = 0; i <= 25; i++){
+        let firstname = uniqueNamesGenerator({ dictionaries: [animals] });
+        let lastname = uniqueNamesGenerator({ dictionaries: [animals] });
         let email = "a" + i + "@rit.edu"
         let username = "a"+i
         arr.push({email: email, username: username, firstname: firstname,
@@ -127,9 +131,15 @@ function generate(){
     let price_arr = ['212.02', '2132.12', '65.90', '434.12', '769.03']
     
     // moment(year+'-'+getRandomInt(2,9)+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00', 'UTC').format()
-    for(let i = 0; i < 500; i++){
-        auctionArr.push({ownerId: getRandomInt(1,20), product_name: product_name_arr[getRandomInt(0,8)], 
-            product_description: product_description_arr[getRandomInt(0,4)],
+    for(let i = 0; i < 40; i++){
+        let product_name = uniqueNamesGenerator({ dictionaries: [animals] });
+        let product_description =  uniqueNamesGenerator({
+            dictionaries: [adjectives, colors, adjectives, colors, adjectives, colors, 
+                adjectives, colors, adjectives, animals], // colors can be omitted here as not used
+            length: 10
+          }); 
+        auctionArr.push({ownerId: getRandomInt(1,20), product_name: product_name, 
+            product_description: product_description,
             product_price: price_arr[getRandomInt(0,4)], status: status_arr[getRandomInt(0,3)],
             start_time: start_time, end_time: end_time_arr[getRandomInt(0,1)]
          })

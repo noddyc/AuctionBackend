@@ -12,10 +12,49 @@ function getRandomIntInclusive(min, max) {
 
 
 
+const test = async(req,res)=>{
+    try{
+        const result = await db.auction.findAll({
+            include:[
+                {
+                model: db.image,
+                as: 'a_Id',
+                }
+            ]
+        })
+        res.status(200).send(result)
+    }catch(err){
+        console.log(err.message)
+    }
+}
+
 
 const getImage = async(req,res)=>{
+    const auctionId = req.body.auctionId;
 
-
+    try{
+        if(Array.isArray(auctionId)){
+            const result = await db.image.findAll({
+                where:{
+                    auctionId:{
+                        [Op.in]: auctionId
+                    },
+                }
+            })
+            res.status(200).json(result)
+        }else{
+            const result = await db.image.findAll({
+                where:{
+                    auctionId:{
+                        [Op.eq]: auctionId
+                    },
+                }
+            })
+            res.status(200).json(result)
+        }
+    }catch(err){
+        console.log(err.message)
+    }
 }
 
 const addAuction= async (req, res)=>{
@@ -30,17 +69,6 @@ const addAuction= async (req, res)=>{
         status: req.body.status || "OPEN_NOT_LIVE",
         winning_number: req.body.winning_number || null, //
         restart: req.body.restart || false,//
-        // slotsOpen: req.body.slots || 10,//
-        // slot_0: req.body.slot_0 || null,
-        // slot_1: req.body.slot_1 || null, 
-        // slot_2: req.body.slot_2 || null,
-        // slot_3: req.body.slot_3 || null,
-        // slot_4: req.body.slot_4 || null,
-        // slot_5: req.body.slot_5 || null,
-        // slot_6: req.body.slot_6 || null,
-        // slot_7: req.body.slot_7 || null,
-        // slot_8: req.body.slot_8 || null,
-        // slot_9: req.body.slot_9 || null,
     }
     try{
         const insertion = await db.auction.create(obj)
@@ -299,7 +327,12 @@ const displayAuction = async(req, res)=>{
                         {
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
-                        }
+                        },
+                        // {
+                        //     model: db.image,
+                        //     as: 'auctionId',
+                        //     attributes: ['data']
+                        // }
                       ]
                     ,
                     where:{
@@ -480,7 +513,12 @@ const displayAuction = async(req, res)=>{
                         {
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
-                        }
+                        },
+                        // {
+                        //     model: db.image,
+                        //     as: 'auctionId',
+                        //     attributes: ['data']
+                        // }
                       ]
                     ,
                     where:{
@@ -665,7 +703,12 @@ const displayAuction = async(req, res)=>{
                         {
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
-                        }
+                        },
+                        // {
+                        //     model: db.image,
+                        //     as: 'auctionId',
+                        //     attributes: ['data']
+                        // }
                       ]
                     ,
                     where:{
@@ -833,7 +876,12 @@ const displayAuction = async(req, res)=>{
                         {
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
-                        }
+                        },
+                        // {
+                        //     model: db.image,
+                        //     as: 'auctionId',
+                        //     attributes: ['data']
+                        // }
                       ]
                     ,
                     where:{
@@ -1358,5 +1406,5 @@ const addHost = async(req, res)=>{
 }
 
 module.exports={
-    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1, rollOver, addHost, getImage
+    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1, rollOver, addHost, getImage, test
 }

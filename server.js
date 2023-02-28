@@ -46,11 +46,14 @@ app.post('/api/posts', upload.array('image'), async (req, res) => {
   const file = req.files
   const id = req.body.auctionId[0]
   const buffers = file.map((f)=>{
-    return {data: f.buffer, auctionId: id}
+    return {imgData: f.buffer, auctionId: id}
   })
-  const result = await db.image.bulkCreate(buffers);
-  
-  res.status(200).send("ok")
+  try{
+    const result = await db.image.bulkCreate(buffers);
+    res.status(200).send(result);
+  }catch(err){
+    console.log(err.message);
+  }
 })
 
 

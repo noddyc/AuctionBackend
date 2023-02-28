@@ -1,8 +1,8 @@
 module.exports={
-    HOST:'database-2.cgmtzjvr1ab2.us-east-1.rds.amazonaws.com',
-    USER: 'admin',
+    HOST:'localhost',
+    USER: 'root',
     PASSWORD: '2446592ny',
-    DB: 'initial_db',
+    DB: 'auctionWeb',
     dialect: 'mysql',
 
     pool:{
