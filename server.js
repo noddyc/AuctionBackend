@@ -131,38 +131,40 @@ io.on('connection', (socket)=>{{
         }
       )
 
-      // delete bid
-      let data = qs.stringify({
-      'auctionId': auctionId,
-      'userId': receiverId,
-      'slot': slot,
-      });
+      if(response === "ACCEPT"){
+              // delete bid
+        let data = qs.stringify({
+        'auctionId': auctionId,
+        'userId': receiverId,
+        'slot': slot,
+        });
+  
+        let config = {
+          method: 'post',
+          url: `http://localhost:9001/bid/withdrawBid1`,
+          headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data : data
+        };
+        axios(config).then((response) => {
+          console.log("able to delete")
+          console.log(JSON.stringify(response.data));
+        }).catch((error) => {
+          throw new Error("Failed to delete selection")
+        })
 
-      let config = {
-        method: 'post',
-        url: `http://localhost:9001/bid/withdrawBid1`,
-        headers: { 
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data : data
-      };
-      axios(config).then((response) => {
-        console.log("able to delete")
-        console.log(JSON.stringify(response.data));
-      }).catch((error) => {
-        throw new Error("Failed to delete selection")
-
-      })
+      }
 
       // create confirm back msg to sender
       let noteSenderId = matchNote.dataValues.senderId;
       let noteReceiverId = matchNote.dataValues.receiverId;
       let obj = response==="ACCEPT"?
       {
-          type:"RETRACTION_RECEIVE", message: `Host ${receiverId} confirm your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host id: ${receiverId} confirm your retraction request on game ${auctionId} of slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }:
       {
-          type:"RETRACTION_RECEIVE", message: `Host ${receiverId} decline your retraction request`, auctionId: 4, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host id: ${receiverId} decline your retraction request on game ${auctionId} of slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }
       const sendBackMsg = await db.notification.create(obj);
       if(receiver !== null){
@@ -176,13 +178,6 @@ io.on('connection', (socket)=>{{
       console.log(err.message)
     }
   } )
-
-
-
-  // socket.on("disconnect", ()=>{
-  //   removeUser(socket.id)
-  //   console.log("User disconnected")
-  // })
 }})
 
 server.listen(9001, ()=>{

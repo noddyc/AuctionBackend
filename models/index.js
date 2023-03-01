@@ -131,7 +131,7 @@ function generate(){
     let price_arr = ['212.02', '2132.12', '65.90', '434.12', '769.03']
     
     // moment(year+'-'+getRandomInt(2,9)+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00', 'UTC').format()
-    for(let i = 0; i < 40; i++){
+    for(let i = 0; i < 15; i++){
         let product_name = uniqueNamesGenerator({ dictionaries: [animals] });
         let product_description =  uniqueNamesGenerator({
             dictionaries: [adjectives, colors, adjectives, colors, adjectives, colors, 
