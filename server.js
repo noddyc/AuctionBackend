@@ -156,6 +156,7 @@ io.on('connection', (socket)=>{{
 
       }
 
+      console.log(matchNote.dataValues)
       // create confirm back msg to sender
       let noteSenderId = matchNote.dataValues.senderId;
       let noteReceiverId = matchNote.dataValues.receiverId;
