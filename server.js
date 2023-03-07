@@ -141,7 +141,7 @@ io.on('connection', (socket)=>{{
   
         let config = {
           method: 'post',
-          url: `http://localhost:9001/bid/withdrawBid1`,
+          url: `http://54.224.203.213:9001/bid/withdrawBid1`,
           headers: { 
             'Content-Type': 'application/x-www-form-urlencoded'
           },
