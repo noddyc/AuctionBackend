@@ -1,8 +1,8 @@
 module.exports={
-    HOST:'localhost',
-    USER: 'root',
+    HOST:'gamewebdb.cq1wjzrczlio.us-east-1.rds.amazonaws.com',
+    USER: 'admin',
     PASSWORD: '2446592ny',
-    DB: 'auctionWeb',
+    DB: 'gameWeb',
     dialect: 'mysql',
 
     pool:{

@@ -12,8 +12,8 @@ const bidRouter = require('./routes/bidRouter')
 const notificationRouter = require('./routes/notificationRouter')
 const axios = require('axios')
 const qs = require('qs')
-
 const multer = require('multer')
+const _ = require('lodash')
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
@@ -77,19 +77,19 @@ const getUser = (userId) => {
 };
 
 io.on('connection', (socket)=>{{
-  console.log("User connected");
+  // console.log("User connected");
 
 
   socket.on("newUser", (username) => {
     addNewUser(username, socket.id);
-    console.log("I am bere")
-    console.log(onlineUsers);
+    // console.log("I am bere")
+    // console.log(onlineUsers);
   });
 
   socket.on("createNotification", async({name, auctionId, slot, senderId, receiverId})=>{
     const receiver = getUser(receiverId);
     let obj = {
-      type: "RETRACTION_SEND", message: `Player ${name} (id: ${senderId}) request retraction of game with id ${auctionId} on slot ${slot}`,
+      type: "RETRACTION_SEND", message: `Player ${_.startCase(name)} (id: ${senderId}) request retraction of Game (id: ${auctionId}) on Slot ${slot}`,
       auctionId: auctionId, senderId: senderId, receiverId: receiverId, 
     }
     try{
@@ -107,11 +107,11 @@ io.on('connection', (socket)=>{{
   // first do it in db,
   // then emit the event to client
   
-  socket.on("increaseCount", async ({receiverId, response, id, slot, auctionId})=>{
-    console.log(receiverId+ " "+response+" "+id+" " + slot)
-    console.log("I am here in increase count")
+  socket.on("increaseCount", async ({receiverId, response, id, slot, auctionId, name})=>{
+    // console.log(receiverId+ " "+response+" "+id+" " + slot)
+    // console.log("I am here in increase count")
     const receiver = getUser(receiverId);
-    console.log(receiverId)
+    // console.log(receiverId)
     try{
           //update
       const result = await db.notification.update(
@@ -148,34 +148,36 @@ io.on('connection', (socket)=>{{
           data : data
         };
         axios(config).then((response) => {
-          console.log("able to delete")
-          console.log(JSON.stringify(response.data));
+          // console.log("able to delete")
+          // console.log(JSON.stringify(response.data));
         }).catch((error) => {
           throw new Error("Failed to delete selection")
         })
 
       }
 
-      console.log(matchNote.dataValues)
+      // console.log(matchNote.dataValues)
       // create confirm back msg to sender
       let noteSenderId = matchNote.dataValues.senderId;
       let noteReceiverId = matchNote.dataValues.receiverId;
       let obj = response==="ACCEPT"?
       {
-          type:"RETRACTION_RECEIVE", message: `Host id: ${receiverId} confirm your retraction request on game ${auctionId} of slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host ${_.startCase(name)} (id: ${receiverId}) confirm your retraction request on Game (id: ${auctionId}) of Slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }:
       {
-          type:"RETRACTION_RECEIVE", message: `Host id: ${receiverId} decline your retraction request on game ${auctionId} of slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host ${_.startCase(name)} (id: ${receiverId}) decline your retraction request on Game (id: ${auctionId}) of Slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }
-      const sendBackMsg = await db.notification.create(obj);
-      if(receiver !== null){
-        console.log("I am bere2")
-        console.log(onlineUsers)
-        io.to(receiver).emit(
-          // maybe item is not being removed?
-          "increaseNotifyCount", obj
-        )
+      const sendBackMsg = await db.notification.create(obj).then(()=>{
+        if(receiver !== null){
+          // console.log("I am bere2")
+          // console.log(onlineUsers)
+          io.to(receiver).emit(
+            // maybe item is not being removed?
+            "increaseNotifyCount", obj
+          )
+        }
       }
+      );
     }catch(err){
       console.log(err.message)
     }

@@ -5,10 +5,12 @@ const moment = require('moment');
 const displayBid = async (req, res)=>{
     let id = req.body.userId;
     try{
+        console.log("start of displayBid----------");
         const result = await db.biding.findAll({
             where:{
                 userId: id,
             }, 
+            // lock: true,
             include: [{
                     model:db.auction,
                     required:true,
@@ -20,16 +22,19 @@ const displayBid = async (req, res)=>{
                     ]
                     }]
             })
+        console.log("end of displayBid----------");
         res.status(200).send(result);
     }catch(err){
         console.log(err.message);
     }
 }
 
+
 const withdrawBid1 = async (req, res)=>{
     // first confirm status
     // 多少种状况
     try{
+        console.log("start of withdraw --------------------")
         const result = await sequelize.transaction(async () =>{
             let slot = req.body.slot;
             const matchAuction = await db.auction.findOne({
@@ -84,9 +89,7 @@ const withdrawBid1 = async (req, res)=>{
                 }
                 return res.status(200).send("Successfully delete");
             }else{
-                console.log("here");
                 //split, player1
-                console.log(matchSlot.dataValues?.player1 == req.body.userId)
                 if(matchSlot.dataValues?.player1 == req.body.userId){
                     const slot= await db.slot.update({player1: null}, {
                         where: {id: slotId}
@@ -164,6 +167,7 @@ const withdrawBid1 = async (req, res)=>{
                             }
                         })
                 }
+                console.log("end of withdraw --------------------")
                 return res.status(200).send("Successfully delete");
             }
         })
@@ -190,7 +194,7 @@ const withdrawBid = async (req, res)=>{
                 throw new Error("Auction not found or auction is not in progress");
             }
             // update auction slot
-            console.log(matchAuction.dataValues)
+        
             const updateSlot = await db.auction.update(
                 {[`slot_${req.body.slot}`]: null, slotsOpen: matchAuction.dataValues.slotsOpen+1},
                 {returning: true, where: conditions}
