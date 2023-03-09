@@ -14,9 +14,44 @@ const axios = require('axios')
 const qs = require('qs')
 const multer = require('multer')
 const _ = require('lodash')
+const cron = require('node-cron')
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
+
+cron.schedule('40 35 12 * * *', async ()=>{
+  let config = {
+    method: 'post',
+    url: `${ip}/auction/updateAuctionStatus`,
+    headers: { },
+    data : data
+  };
+  
+  axios(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+})
+
+cron.schedule('40 17 21 * * *', async ()=>{
+  let config = {
+    method: 'post',
+    url: `${ip}/auction/updateAuctionStatus`,
+    headers: { },
+    data : data
+  };
+  
+  axios(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+})
 
 const app = express()
 app.use(cors());
@@ -162,10 +197,10 @@ io.on('connection', (socket)=>{{
       let noteReceiverId = matchNote.dataValues.receiverId;
       let obj = response==="ACCEPT"?
       {
-          type:"RETRACTION_RECEIVE", message: `Host ${_.startCase(name)} (id: ${receiverId}) confirm your retraction request on Game (id: ${auctionId}) of Slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host ${_.startCase(name)} (id: ${receiverId}) confirm retraction request on Game (id: ${auctionId}) of Slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }:
       {
-          type:"RETRACTION_RECEIVE", message: `Host ${_.startCase(name)} (id: ${receiverId}) decline your retraction request on Game (id: ${auctionId}) of Slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
+          type:"RETRACTION_RECEIVE", message: `Host ${_.startCase(name)} (id: ${receiverId}) decline retraction request on Game (id: ${auctionId}) of Slot ${slot}`, auctionId: auctionId, senderId: noteReceiverId, receiverId: noteSenderId, response: 'NONE', viewed: false
       }
       const sendBackMsg = await db.notification.create(obj).then(()=>{
         if(receiver !== null){

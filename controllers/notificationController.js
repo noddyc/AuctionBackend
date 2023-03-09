@@ -17,6 +17,58 @@ const displayNotifications = async (req, res)=>{
     }
 }
 
+const updateNotificationsView = async (req, res)=>{
+    try{
+        let id = req.body.id;
+        const result = await db.notification.update(
+            {
+                viewed: false
+            },
+            {
+                where:{
+                    id: id
+                }
+            }
+        )
+        res.status(200).json(result);
+    }catch(err){
+        console.log(err.message)
+    }
+}
+
+const searchNotifications = async (req, res)=>{
+    try{
+        const {message, response, viewed, auctionId, senderId, receiverId} = req.body;
+        let where = {};
+        if(message){
+            where.message = {[Op.eq]: message}
+        }
+        if(response){
+            where.response = {[Op.eq]: response}
+        }
+        if(viewed){
+            where.viewed = {[Op.eq]: viewed}
+        }
+        if(auctionId){
+            where.auctionId = {[Op.eq]: auctionId}
+        }
+        if(senderId){
+            where.senderId = {[Op.eq]: senderId}
+        }
+        if(receiverId){
+            where.receiverId = {[Op.eq]: receiverId}
+        }
+        const search = await db.notification.findAll(
+            {
+                where
+            }
+        )
+        res.status(200).json(search)
+    }catch(err){
+        console.log(err.message)
+    }
+}
+
 const createNotifications = async (req, res) =>{
     try{
         let senderId = req.body.senderId
@@ -137,5 +189,5 @@ const deleteNotifications = async (req, res)=>{
 
 
 module.exports={
-    displayNotifications, updateNotifications, replyNotifications, createNotifications, deleteNotifications
+    displayNotifications, updateNotifications, replyNotifications, createNotifications, deleteNotifications, searchNotifications, updateNotificationsView
 }

@@ -1405,6 +1405,35 @@ const addHost = async(req, res)=>{
     }
 }
 
+
+const updateAuctionStatus = async(req, res)=>{
+    try{
+        const result = await sequelize.transaction(async ()=>{
+            const currentTime = new Date();
+            //update
+            const update = await db.auction.update(
+                {status: 'WAITING_FOR_DRAW'},
+                {   
+                    where: {
+                        [Op.and]:{
+                            status:{
+                                [Op.or]: ['OPEN_NOT_LIVE','OPEN_LIVE']
+                            },
+                            end_time:{
+                                [Op.lte]: currentTime
+                            }
+                        }
+                    }
+                }
+            )
+            return res.status(200).json(update);
+        })
+    }catch(err){
+        res.status(500).send({msg: err.message});
+    }
+}
+
 module.exports={
-    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1, rollOver, addHost, getImage, test
+    addAuction, joinAuction, cancelAuction, displayAuction, createAuction, joinAuction1, rollOver, addHost, getImage, test,
+    updateAuctionStatus
 }

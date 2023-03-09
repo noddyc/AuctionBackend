@@ -30,6 +30,45 @@ const addWinningNumber = async (req, res)=>{
     }
 }
 
+const submitWinningNumber = async (req, res)=>{
+    try{
+        let obj = {
+            firstNumber: req.body.firstNumber,
+            secondNumber: req.body.secondNumber,
+            thirdNumber: req.body.thirdNumber,
+            specialNumber: req.body.specialNumber,
+            postTime: new Date()
+        }
+        const targetDateTime = new Date(); // Replace with your target date and time
+        // const targetDate = new Date(targetDateTime.getFullYear(), targetDateTime.getMonth(), targetDateTime.getDate());
+        // const targetTime = targetDateTime.getTime();
+
+        const result = await sequelize.transaction(async()=>{
+            const insertion = await db.winning_number.create(obj);
+            
+            const updates = await db.auction.update(
+                    {winnning_number: insertion.id,
+                    status: "NO_WINNER_WINNER_NOTIFIED"}, 
+                    {where:{
+                        [Op.and]:{
+                            end_time:{
+                                [Op.lt]: targetDateTime
+                            },
+                            status:{
+                                [Op.ne]: "NO_WINNER_WINNER_NOTIFIED"
+                            }
+                        }
+                    }}
+            )
+            return res.status(200).json(updates)
+        }
+        )
+    }catch(err){
+        console.log(err.message)
+    }
+
+}
+
 module.exports={
-    addWinningNumber
+    addWinningNumber, submitWinningNumber
 }
