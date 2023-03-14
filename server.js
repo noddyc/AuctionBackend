@@ -17,12 +17,13 @@ const _ = require('lodash')
 const cron = require('node-cron')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
-const ip = 'http://localhost:9001'
+// const ip = 'http://localhost:9001'
+const ip = 'http://54.224.203.213:9001'
 
 cron.schedule('40 35 12 * * *', async ()=>{
   let config = {
     method: 'post',
-    url: `http://54.224.203.213:9001/auction/updateAuctionStatus`,
+    url: `${ip}/auction/updateAuctionStatus`,
     headers: { },
     data : data
   };
@@ -39,7 +40,7 @@ cron.schedule('40 35 12 * * *', async ()=>{
 cron.schedule('40 17 21 * * *', async ()=>{
   let config = {
     method: 'post',
-    url: `http://54.224.203.213:9001/auction/updateAuctionStatus`,
+    url: `${ip}/auction/updateAuctionStatus`,
     headers: { },
     data : data
   };
@@ -176,7 +177,7 @@ io.on('connection', (socket)=>{{
   
         let config = {
           method: 'post',
-          url: `http://54.224.203.213:9001/bid/withdrawBid1`,
+          url: `${ip}/bid/withdrawBid1`,
           headers: { 
             'Content-Type': 'application/x-www-form-urlencoded'
           },

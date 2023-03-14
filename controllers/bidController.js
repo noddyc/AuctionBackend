@@ -1,6 +1,19 @@
 const {db, sequelize} = require("../models")
 const {Op, literal} = require('sequelize')
 const moment = require('moment');
+const _ = require('lodash')
+
+const checkSlotIsSix = (dataValues)=>{
+    const arr = ['slot_0', 'slot_1', 'slot_2', 'slot_3', 'slot_4', 'slot_5', 'slot_6', 'slot_7', 'slot_8','slot_9','slot_10'];
+    let count = 0;
+    for(let i = 0; i < arr.length; i++){
+        if(!_.isNil(dataValues[arr[i]])){
+            console.log(dataValues[arr[i]])
+            count++;
+        }
+    }
+    return count <= 6
+}
 
 const displayBid = async (req, res)=>{
     let id = req.body.userId;
@@ -34,12 +47,13 @@ const withdrawBid1 = async (req, res)=>{
     // first confirm status
     // 多少种状况
     try{
-        console.log("start of withdraw --------------------")
         const result = await sequelize.transaction(async () =>{
+        
             let slot = req.body.slot;
             const matchAuction = await db.auction.findOne({
                 where: {id: req.body.auctionId}
             })
+
             if(matchAuction.dataValues.status !== 'OPEN_LIVE'
             && matchAuction.dataValues.status !== 'OPEN_NOT_LIVE'){
                 throw new Error("This game can not withdraw")
@@ -56,6 +70,7 @@ const withdrawBid1 = async (req, res)=>{
             
             //情况一，不split
             if(matchSlot.dataValues?.split == 'false'){
+                console.log("start of withdraw1 --------------------")
                 // return res.status(200).send("this is not split");
                 const slotDeletion = await db.slot.destroy({
                     where: {id: slotId}
@@ -87,8 +102,26 @@ const withdrawBid1 = async (req, res)=>{
                         }
                     })
                 }
+
+                ////
+                const checkAuctionIsSix = await db.auction.findOne({
+                    where: {id: req.body.auctionId}
+                }).then(async (e)=>{
+                    console.log("line 188")
+                    if(checkSlotIsSix(e.dataValues)){
+                        await db.auction.update(
+                            {status: 'OPEN_NOT_LIVE'},
+                            {where:{
+                                id: req.body.auctionId
+                            }}
+                        )
+                    }
+                })
+
+                console.log("end of withdraw1 --------------------")
                 return res.status(200).send("Successfully delete");
             }else{
+                console.log("start of withdraw2 --------------------")
                 //split, player1
                 if(matchSlot.dataValues?.player1 == req.body.userId){
                     const slot= await db.slot.update({player1: null}, {
@@ -167,7 +200,23 @@ const withdrawBid1 = async (req, res)=>{
                             }
                         })
                 }
-                console.log("end of withdraw --------------------")
+
+
+                const checkAuctionIsSix = await db.auction.findOne({
+                    where: {id: req.body.auctionId}
+                }).then(async (e)=>{
+                    console.log("line 188")
+                    if(checkSlotIsSix(e.dataValues)){
+                        await db.auction.update(
+                            {status: 'OPEN_NOT_LIVE'},
+                            {where:{
+                                id: req.body.auctionId
+                            }}
+                        )
+                    }
+                })
+
+                console.log("end of withdraw2 --------------------")
                 return res.status(200).send("Successfully delete");
             }
         })
