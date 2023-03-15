@@ -21,7 +21,7 @@ const upload = multer({ storage: storage })
 const ip = 'http://54.224.203.213:9001'
 
 // 40 35 12
-cron.schedule('40 58 9 * * *', async ()=>{
+cron.schedule('40 57 9 * * *', async ()=>{
   let config = {
     method: 'post',
     url: `${ip}/auction/updateAuctionStatus`,
