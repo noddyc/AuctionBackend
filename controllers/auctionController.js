@@ -1409,9 +1409,7 @@ const addHost = async(req, res)=>{
 const updateAuctionStatus = async(req, res)=>{
     try{
         const result = await sequelize.transaction(async ()=>{
-            let currentTime = new Date();
-            let tenMinutesLater = new Date();
-            tenMinutesLater.setMinutes(tenMinutesLater.getMinutes() + 10);
+            const currentTime = new Date();
             //update
             const update = await db.auction.update(
                 {status: 'WAITING_FOR_DRAW'},
@@ -1421,9 +1419,8 @@ const updateAuctionStatus = async(req, res)=>{
                             status:{
                                 [Op.or]: ['OPEN_NOT_LIVE','OPEN_LIVE']
                             },
-
                             end_time:{
-                                [Op.lte]: tenMinutesLater
+                                [Op.lte]: currentTime
                             }
                         }
                     }
