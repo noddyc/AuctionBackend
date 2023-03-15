@@ -1419,9 +1419,9 @@ const updateAuctionStatus = async(req, res)=>{
                             status:{
                                 [Op.or]: ['OPEN_NOT_LIVE','OPEN_LIVE']
                             },
-                            end_time:{
-                                [Op.lte]: currentTime
-                            }
+                            // end_time:{
+                            //     [Op.lte]: currentTime
+                            // }
                         }
                     }
                 }
