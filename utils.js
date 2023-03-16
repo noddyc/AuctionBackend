@@ -1,7 +1,8 @@
-let dayHour = 6;
-let dayMin = 50;
-let daySec = 40;
+let dayHour = 11; // utc
+let dayMin = 45; // utc
+let daySec = 40; // utc
 
+// need to convert to utc
 let nightHour = 21;
 let nightMin = 17;
 let nightSec = 40;

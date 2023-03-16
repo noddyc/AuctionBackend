@@ -524,7 +524,9 @@ const rollOver = async(req, res) =>{
                 {where: {
                     id: req.body.auctionId
                 }}
-            )            
+            )          
+            // update end time
+
             return res.status(200).json(updateStatus);
         })
     }catch(err){
@@ -658,8 +660,10 @@ const addHost = async(req, res)=>{
 const updateAuctionStatus = async(req, res)=>{
     try{
         const result = await sequelize.transaction(async ()=>{
-            let tenMinutesLater = new Date();
-            tenMinutesLater.setMinutes(tenMinutesLater.getMinutes() + 10);
+            let currentDate = new Date();
+            let sixMinutesLater =  new Date(currentDate.toUTCString());
+            sixMinutesLater.setMinutes(sixMinutesLater.getMinutes() + 6);
+            console.log(sixMinutesLater)
             //update
             const update = await db.auction.update(
                 {status: 'WAITING_FOR_DRAW'},
@@ -670,7 +674,7 @@ const updateAuctionStatus = async(req, res)=>{
                                 [Op.or]: ['OPEN_NOT_LIVE','OPEN_LIVE']
                             },
                             end_time:{
-                                [Op.lte]:tenMinutesLater
+                                [Op.lte]:sixMinutesLater
                             }
                         }
                     }
