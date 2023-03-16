@@ -20,7 +20,11 @@ const upload = multer({ storage: storage })
 const ip = 'http://localhost:9001'
 // const ip = 'http://54.224.203.213:9001'
 
-cron.schedule('40 35 12 * * *', async ()=>{
+cron.schedule('40 33 14 * * *', async ()=>{
+  console.log("update status")
+  let data = qs.stringify({
+   
+  });
   let config = {
     method: 'post',
     url: `${ip}/auction/updateAuctionStatus`,
@@ -38,6 +42,7 @@ cron.schedule('40 35 12 * * *', async ()=>{
 })
 
 cron.schedule('40 17 21 * * *', async ()=>{
+  console.log("update status")
   let config = {
     method: 'post',
     url: `${ip}/auction/updateAuctionStatus`,
