@@ -199,18 +199,6 @@ const createAuction = async(req, res)=>{
     }catch(err){
         res.status(500).send("Failed to create auction");
     }
-    // let obj = {
-    //     ownerId: req.body.ownerId,//
-    //     product_name: req.body.product_name,//
-    //     product_price: req.body.product_price,//
-    //     product_description: req.body.product_description,//
-    //     start_time: req.body.start_time,//
-    //     end_time: req.body.end_time,//
-    //     status: req.body.status,//
-    //     winning_number: req.body.winning_number || null, //
-    //     restart: req.body.restart || false,//
-
-    // }
 }
 
 function checkSlotsFilled(dataValues){
@@ -670,7 +658,8 @@ const addHost = async(req, res)=>{
 const updateAuctionStatus = async(req, res)=>{
     try{
         const result = await sequelize.transaction(async ()=>{
-            const currentTime = new Date();
+            let tenMinutesLater = new Date();
+            tenMinutesLater.setMinutes(tenMinutesLater.getMinutes() + 10);
             //update
             const update = await db.auction.update(
                 {status: 'WAITING_FOR_DRAW'},
@@ -681,7 +670,7 @@ const updateAuctionStatus = async(req, res)=>{
                                 [Op.or]: ['OPEN_NOT_LIVE','OPEN_LIVE']
                             },
                             end_time:{
-                                [Op.lte]: currentTime
+                                [Op.lte]:tenMinutesLater
                             }
                         }
                     }
