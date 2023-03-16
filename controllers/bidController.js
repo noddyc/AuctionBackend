@@ -31,7 +31,13 @@ const displayBid = async (req, res)=>{
                         {
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
-                        }
+                        },
+                        {
+                            model: db.winning_number,
+                            as: 'winNum',
+                            attributes:['firstNumber','secondNumber','thirdNumber','specialNumber'],
+                            required: false
+                        },
                     ]
                     }]
             })

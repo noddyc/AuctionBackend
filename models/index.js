@@ -42,7 +42,7 @@ db.user.belongsToMany(db.auction, {as:'userId', through: db.user_auction, foreig
 db.auction.belongsToMany(db.user, {as: 'auctionId', through: db.user_auction, foreignKey: 'auctionId'})
 
 db.auction.belongsTo(db.user, {foreignKey: 'ownerId',  onDelete: 'cascade' })
-db.auction.belongsTo(db.winning_number, {foreignKey: 'winnning_number', onDelete: 'cascade'})
+db.auction.belongsTo(db.winning_number, {foreignKey: 'winnning_number', as:'winNum', onDelete: 'cascade'})
 
 db.biding.belongsTo(db.user, {foreignKey: 'userId',  onDelete: 'cascade' })
 db.biding.belongsTo(db.auction, {foreignKey: 'auctionId',  onDelete: 'cascade' })
