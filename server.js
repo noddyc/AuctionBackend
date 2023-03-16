@@ -24,23 +24,23 @@ const utils = require('./utils')
 //40 17 12
 cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()=>{
   console.log("update status")
-  let data = qs.stringify({
+  // let data = qs.stringify({
    
-  });
-  let config = {
-    method: 'post',
-    url: `${ip}/auction/updateAuctionStatus`,
-    headers: { },
-    data : data
-  };
+  // });
+  // let config = {
+  //   method: 'post',
+  //   url: `${ip}/auction/updateAuctionStatus`,
+  //   headers: { },
+  //   data : data
+  // };
   
-  axios(config)
-  .then((response) => {
-    console.log(JSON.stringify(response.data));
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+  // axios(config)
+  // .then((response) => {
+  //   console.log(JSON.stringify(response.data));
+  // })
+  // .catch((error) => {
+  //   console.log(error);
+  // });
 })
 
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, async ()=>{
