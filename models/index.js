@@ -122,8 +122,8 @@ function generate(){
     let product_price = "210.01"
     let start_time = moment.tz("2022-01-08T08:00:00","YYYY-MM-DDTHH:mm:ss", 'UTC').format();
 
-    let end_time_arr = [moment.tz("2022-03-08T12:40:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format(),
-     moment.tz("2022-03-08T21:22:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()]
+    let end_time_arr = [moment.tz("2022-03-16T12:40:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format(),
+     moment.tz("2022-03-16T21:22:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()]
 
     let status_arr = ["OPEN_NOT_LIVE", "OPEN_LIVE", "WAITING_FOR_DRAW", "NO_WINNER_WINNER_NOTIFIED"]
     let price_arr = ['212.02', '2132.12', '65.90', '434.12', '769.03']
