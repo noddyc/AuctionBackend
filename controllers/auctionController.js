@@ -2,6 +2,7 @@ const {sequelize, db} = require("../models")
 const moment = require("moment")
 const {Op} = require('sequelize');
 const e = require("express");
+const utils = require('../utils')
 
 
 function getRandomIntInclusive(min, max) {
@@ -502,12 +503,14 @@ const rollOver = async(req, res) =>{
                 where: {id: matchAuction.dataValues.winnning_number}
             })
     
-            if(matchAuction.dataValues[`slot_${num.number}`] !== null){
+            if(matchAuction.dataValues[`slot_${num.dataValues.specialNumber}`] !== null){
+                console.log("Failed to RollOver with a winner")
                 throw new Error("Failed to RollOver with a winner")
             }
     
-            // find onwer spot
+            // // find onwer spot
             let ownerSpot = findOwnerSpot(matchAuction.dataValues);
+            
            
             // delete owner spot
             if(ownerSpot !== null){
@@ -518,14 +521,17 @@ const rollOver = async(req, res) =>{
                 )
             }
 
-            // update status
+            // update status and end time
+            let endTime = new Date(matchAuction.dataValues.end_time);
+            endTime.setUTCDate(endTime.getUTCDate() + 1);
+            // console.log(endTime)
+
             let updateStatus = await db.auction.update(
-                {status: "OPEN_NOT_LIVE"},
+                {status: "OPEN_NOT_LIVE", end_time: endTime},
                 {where: {
                     id: req.body.auctionId
                 }}
             )          
-            // update end time
 
             return res.status(200).json(updateStatus);
         })
@@ -555,6 +561,38 @@ function firstOpenSpot(dataValues){
     }
     return null;
 }
+
+
+const updateAuctionStatus = async(req, res)=>{
+    try{
+        const result = await sequelize.transaction(async ()=>{
+            let currentDate = new Date();
+            let sixMinutesLater =  new Date(currentDate.toUTCString());
+            sixMinutesLater.setMinutes(sixMinutesLater.getMinutes() + 6);
+            console.log(sixMinutesLater)
+            //update
+            const update = await db.auction.update(
+                {status: 'WAITING_FOR_DRAW'},
+                {   
+                    where: {
+                        [Op.and]:{
+                            status:{
+                                [Op.or]: ['OPEN_NOT_LIVE','OPEN_LIVE']
+                            },
+                            end_time:{
+                                [Op.lte]:sixMinutesLater
+                            }
+                        }
+                    }
+                }
+            )
+            return res.status(200).json(update);
+        })
+    }catch(err){
+        res.status(500).send({msg: err.message});
+    }
+}
+
 const addHost = async(req, res)=>{
     // is waiting for draw
     // has six spot
@@ -608,12 +646,8 @@ const addHost = async(req, res)=>{
                     id: req.body.auctionId
                 }
             })
-            let curTime = new Date();
-            let endTime = new Date(matchAuction.dataValues.end_time);
-            if(matchAuction.dataValues.endTime < curTime){
-                throw new Error("This game was closed")
-            
-            }
+
+
             if(matchAuction.dataValues.status !=='WAITING_FOR_DRAW'){
                 console.log("1310 here")
                 throw new Error("Failed to pick slot as host")
@@ -624,7 +658,7 @@ const addHost = async(req, res)=>{
                 throw new Error("Failed to pick slot as host")
             }
 
-            // create slot
+            // // create slot
             const createSlot = await db.slot.create(
 
                 {   
@@ -636,9 +670,11 @@ const addHost = async(req, res)=>{
                 
                 }
             )
-            // update slot
+            // // update slot
 
             let openSlot = firstOpenSpot(matchAuction.dataValues);
+            console.log(openSlot);
+            console.log(createSlot.dataValues.id);
 
             const updateSlot = await db.auction.update(
                 {
@@ -649,38 +685,6 @@ const addHost = async(req, res)=>{
                 }}
             )
             return res.status(200).json({slot: updateSlot});
-
-        })
-    }catch(err){
-        res.status(500).send({msg: err.message});
-    }
-}
-
-
-const updateAuctionStatus = async(req, res)=>{
-    try{
-        const result = await sequelize.transaction(async ()=>{
-            let currentDate = new Date();
-            let sixMinutesLater =  new Date(currentDate.toUTCString());
-            sixMinutesLater.setMinutes(sixMinutesLater.getMinutes() + 6);
-            console.log(sixMinutesLater)
-            //update
-            const update = await db.auction.update(
-                {status: 'WAITING_FOR_DRAW'},
-                {   
-                    where: {
-                        [Op.and]:{
-                            status:{
-                                [Op.or]: ['OPEN_NOT_LIVE','OPEN_LIVE']
-                            },
-                            end_time:{
-                                [Op.lte]:sixMinutesLater
-                            }
-                        }
-                    }
-                }
-            )
-            return res.status(200).json(update);
         })
     }catch(err){
         res.status(500).send({msg: err.message});
