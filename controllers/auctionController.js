@@ -527,7 +527,7 @@ const rollOver = async(req, res) =>{
             // console.log(endTime)
 
             let updateStatus = await db.auction.update(
-                {status: "OPEN_NOT_LIVE", end_time: endTime},
+                {status: "OPEN_NOT_LIVE", end_time: endTime , winnning_number: null},
                 {where: {
                     id: req.body.auctionId
                 }}
