@@ -217,11 +217,20 @@ const joinAuction1 = async(req, res)=>{
     try{
         const result = await sequelize.transaction(async ()=>{
             // let id = req.body.auctionId;
+
+            let split = req.body.split;
+            let slot = req.body.slot;
+
             const matchAuction = await db.auction.findOne({
                 where: {id: req.body.auctionId}
             })
             if(matchAuction === null){
                 throw new Error("Game not found");
+            }
+            console.log(matchAuction.dataValues[`slot_${slot}`]!==null)
+            if(matchAuction.dataValues[`slot_${slot}`] !== null){
+                console.log("line 232");
+                throw new Error("Game Slot Filled Already");
             }
 
             // console.log(matchAuction.dataValues)
@@ -229,7 +238,7 @@ const joinAuction1 = async(req, res)=>{
             let currentTime = moment(new Date(), 'UTC');
             let endTime = moment(matchAuction.dataValues.end_time)
             let endTimeConverted = endTime.subtract(6, 'minutes').tz();
-            console.log(endTimeConverted)
+            // console.log(endTimeConverted)
 
             if(currentTime >= endTimeConverted){
                 console.log("Game is closed");
@@ -248,9 +257,8 @@ const joinAuction1 = async(req, res)=>{
             //     throw new Error("auction is full");
             // }
 
-            let split = req.body.split;
-            let slot = req.body.slot;
-            console.log(split);
+    
+            // console.log(split);
             // check slot is filled or not
             
             // create slot
