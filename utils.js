@@ -1,5 +1,5 @@
 let dayHour = 9; // should put in est time according to utc
-let dayMin = 35; // utc
+let dayMin = 45; // utc
 let daySec = 40; // utc
 
 // need to convert to utc or not
