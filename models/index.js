@@ -122,14 +122,18 @@ function generate(){
     let product_price = "210.01"
     let start_time = moment.tz("2022-01-08T08:00:00","YYYY-MM-DDTHH:mm:ss", 'UTC').format();
 
-    let end_time_arr = [new Date(moment.tz("2023-03-16T12:40:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()),
-     new Date(moment.tz("2023-03-16T21:22:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format())]
+    let end_time_arr = [new Date(moment.tz("2023-03-20T12:40:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()),
+    new Date(moment.tz("2023-03-21T12:40:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()),
+    new Date(moment.tz("2023-03-22T12:40:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()),
+    new Date(moment.tz("2023-03-21T21:22:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format()),
+     new Date(moment.tz("2023-03-22T21:22:00", "YYYY-MM-DDTHH:mm:ss", 'UTC').format())]
 
-    let status_arr = ["OPEN_NOT_LIVE", "OPEN_LIVE", "WAITING_FOR_DRAW", "NO_WINNER_WINNER_NOTIFIED"]
-    let price_arr = ['212.02', '2132.12', '65.90', '434.12', '769.03']
+    // let status_arr = ["OPEN_NOT_LIVE", "OPEN_LIVE", "WAITING_FOR_DRAW", "NO_WINNER_WINNER_NOTIFIED"]
+    let status_arr = ["OPEN_NOT_LIVE"]
+    let price_arr = ['212', '2132', '65', '434', '769']
     
     // moment(year+'-'+getRandomInt(2,9)+'-'+getRandomInt(1,25)+' '+getRandomInt(1,20)+':'+getRandomInt(1,50)+':00', 'UTC').format()
-    for(let i = 0; i < 100; i++){
+    for(let i = 0; i < 15; i++){
         let product_name = uniqueNamesGenerator({ dictionaries: [animals] });
         let product_description =  uniqueNamesGenerator({
             dictionaries: [adjectives, colors, adjectives, colors, adjectives, colors, 
@@ -138,8 +142,10 @@ function generate(){
           }); 
         auctionArr.push({ownerId: getRandomInt(1,20), product_name: product_name, 
             product_description: product_description,
-            product_price: price_arr[getRandomInt(0,4)], status: status_arr[getRandomInt(0,3)],
-            start_time: start_time, end_time: end_time_arr[getRandomInt(0,1)]
+            product_price: price_arr[getRandomInt(0,price_arr.length-1)], 
+            // status: status_arr[getRandomInt(0,1)],
+            status: status_arr[0],
+            start_time: start_time, end_time: end_time_arr[getRandomInt(0,end_time_arr.length-1)]
          })
     }
     db.auction.bulkCreate(auctionArr).then(()=>{console.log("bulk auctions created")})
