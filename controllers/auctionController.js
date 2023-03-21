@@ -227,13 +227,6 @@ const joinAuction1 = async(req, res)=>{
             if(matchAuction === null){
                 throw new Error("Game not found");
             }
-            console.log(matchAuction.dataValues[`slot_${slot}`]!==null)
-            if(matchAuction.dataValues[`slot_${slot}`] !== null){
-                console.log("line 232");
-                throw new Error("Game Slot Filled Already");
-            }
-
-            // console.log(matchAuction.dataValues)
 
             let currentTime = moment(new Date(), 'UTC');
             let endTime = moment(matchAuction.dataValues.end_time)
