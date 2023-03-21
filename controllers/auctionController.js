@@ -244,13 +244,26 @@ const joinAuction1 = async(req, res)=>{
                 throw new Error("can not join game created by you")
             }
 
-            // check slots
-            // if(matchAuction.dataValues.slotsOpen === 0){
-            //     console.log("auction is full");
-            //     throw new Error("auction is full");
-            // }
+            // confirm the slot is being taken
+            if(matchAuction.dataValues[`slot_${slot}`] !== null){
+                console.log('line 249')
+                if(split == 'false'){
+                    console.log('line 250')
+                    throw new Error("can not join game that is occupied")
+                }else{
+                    console.log(matchAuction.dataValues)
+                    console.log(matchAuction.dataValues[`slot_${slot}`]);
+                    const slotInfo = await db.slot.findOne(
+                        {where: {id: matchAuction.dataValues[`slot_${slot}`]}}
+                    )
+                    console.log('line 259')
+                    console.log(slotInfo.dataValues)
+                    if(slotInfo.split == false){
+                        throw new Error("can not join game that is occupied")
+                    }
+                }
+            }
 
-    
             // console.log(split);
             // check slot is filled or not
             
