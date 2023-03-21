@@ -227,6 +227,9 @@ const joinAuction1 = async(req, res)=>{
             if(matchAuction === null){
                 throw new Error("Game not found");
             }
+            if(!(matchAuction.dataValues.status == 'OPEN_NOT_LIVE' || matchAuction.dataValues.status == 'OPEN_LIVE')){
+                throw new Error("Game Is Closed")
+            }
 
             let currentTime = moment(new Date(), 'UTC');
             let endTime = moment(matchAuction.dataValues.end_time)
