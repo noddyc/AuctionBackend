@@ -1,15 +1,17 @@
-let dayHour = 9; // should put in est time according to utc
-let dayMin = 50; // utc
+let dayHour = 6; // should put in est time according to utc
+let dayMin = 35; // utc
 let daySec = 40; // utc
 
-let dayHourSaving = 10;
-let dayMinSaving = 0;
-let daySecSaving = 0;
+let dayHourSaving = 5;
+
 
 // need to convert to utc or not
-let nightHour = 21;
+let nightHour = 3;
 let nightMin = 17;
 let nightSec = 40;
+
+let nightHourSaving = 2;
+
 
 
 function calcInSec(H,M,S){
@@ -17,4 +19,4 @@ function calcInSec(H,M,S){
 }
 
 module.exports ={dayHour, dayMin, daySec, nightHour, nightMin, nightSec,
-    dayHourSaving, dayMinSaving, daySecSaving, calcInSec}
+    dayHourSaving, nightHourSaving, calcInSec}
