@@ -44,6 +44,28 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()
   });
 })
 
+cron.schedule(`${utils.daySecSaving} ${utils.dayMinSaving} ${utils.dayHourSaving} * * *`, async ()=>{
+  console.log("update status")
+  let data = qs.stringify({
+   
+  });
+  let config = {
+    method: 'post',
+    url: `${ip}/auction/updateAuctionStatus`,
+    headers: { },
+    data : data
+  };
+  
+  axios(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+})
+
+
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, async ()=>{
   console.log("update status")
   let config = {
