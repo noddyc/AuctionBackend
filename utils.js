@@ -1,8 +1,8 @@
-let dayHour = 6; // should put in est time according to utc
+let dayHour = 18; // should put in est time according to utc
 let dayMin = 35; // utc
 let daySec = 40; // utc
 
-let dayHourSaving = 5;
+let dayHourSaving = 17;
 
 
 // need to convert to utc or not
