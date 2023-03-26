@@ -37,6 +37,13 @@ db.biding = require('./biding')(sequelize, DataTypes)
 db.winning_number = require('./winning_number')(sequelize, DataTypes)
 db.slot = require('./slot')(sequelize, DataTypes)
 db.image = require('./image')(sequelize, DataTypes)
+db.product = require('./product')(sequelize, DataTypes)
+db.product_auction = require('./auction_product')(sequelize, DataTypes)
+
+
+db.auction.belongsToMany(db.product, { through: db.product_auction, foreignKey: 'auctionId'})
+db.product.belongsToMany(db.auction, { through: db.product_auction, foreignKey: 'productId'})
+db.image.belongsTo(db.product, {foreignKey: 'productId', onDelete: 'cascade'})
 
 db.user.belongsToMany(db.auction, {as:'userId', through: db.user_auction, foreignKey: 'userId'})
 db.auction.belongsToMany(db.user, {as: 'auctionId', through: db.user_auction, foreignKey: 'auctionId'})
@@ -66,7 +73,7 @@ db.notification.belongsTo(db.auction, {foreignKey: 'auctionId', onDelete: 'casca
 db.notification.belongsTo(db.user, {foreignKey:'senderId', onDelete: 'cascade'})
 db.notification.belongsTo(db.user, {foreignKey:'receiverId', onDelete: 'cascade'})
 
-db.image.belongsTo(db.auction, {foreignKey: 'auctionId',onDelete:'cascade'})
+// db.image.belongsTo(db.auction, {foreignKey: 'auctionId',onDelete:'cascade'})
 
 
 // generate()
