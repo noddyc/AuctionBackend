@@ -25,6 +25,7 @@ const utils = require('./utils')
 //40 17 12
 cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()=>{
   console.log("update status")
+  console.log("cron tab 1")
   let data = qs.stringify({
    
   });
@@ -46,6 +47,7 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()
 
 cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, async ()=>{
   console.log("update status")
+  console.log("cron tab 2")
   let data = qs.stringify({
    
   });
@@ -68,6 +70,7 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, as
 
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, async ()=>{
   console.log("update status")
+  console.log("cron tab 3")
   let config = {
     method: 'post',
     url: `${ip}/auction/updateAuctionStatus`,
@@ -87,6 +90,7 @@ cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, as
 
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHourSaving} * * *`, async ()=>{
   console.log("update status")
+  console.log("cron tab 4")
   let config = {
     method: 'post',
     url: `${ip}/auction/updateAuctionStatus`,
