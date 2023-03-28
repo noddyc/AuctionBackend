@@ -12,22 +12,22 @@ module.exports = (sequelize, DataTypes)=>{
             type: DataTypes.STRING,
             defaultValue: ""
         },
-        image1:{
+        image_1:{
             type: DataTypes.BLOB('long'),
             allowNull: true,
             defaultValue: null
         },
-        image2:{
+        image_2:{
             type: DataTypes.BLOB('long'),
             allowNull: true,
             defaultValue: null
         },
-        image3:{
+        image_3:{
             type: DataTypes.BLOB('long'),
             allowNull: true,
             defaultValue: null
         },
-        image4:{
+        image_4:{
             type: DataTypes.BLOB('long'),
             allowNull: true,
             defaultValue: null
