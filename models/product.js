@@ -12,6 +12,26 @@ module.exports = (sequelize, DataTypes)=>{
             type: DataTypes.STRING,
             defaultValue: ""
         },
+        image1:{
+            type: DataTypes.BLOB('long'),
+            allowNull: true,
+            defaultValue: null
+        },
+        image2:{
+            type: DataTypes.BLOB('long'),
+            allowNull: true,
+            defaultValue: null
+        },
+        image3:{
+            type: DataTypes.BLOB('long'),
+            allowNull: true,
+            defaultValue: null
+        },
+        image4:{
+            type: DataTypes.BLOB('long'),
+            allowNull: true,
+            defaultValue: null
+        },
     },
     {timestamps:false})
     return product
