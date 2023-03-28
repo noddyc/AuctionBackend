@@ -586,6 +586,7 @@ const updateAuctionStatus = async(req, res)=>{
             let currentDate = new Date();
             let sixMinutesLater =  new Date(currentDate.toUTCString());
             sixMinutesLater.setMinutes(sixMinutesLater.getMinutes() + 6);
+            console.log("line 589 for update status")
             console.log(sixMinutesLater)
             //update
             const update = await db.auction.update(
