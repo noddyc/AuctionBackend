@@ -71,6 +71,9 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, as
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, async ()=>{
   console.log("update status")
   console.log("cron tab 3")
+  let data = qs.stringify({
+   
+  });
   let config = {
     method: 'post',
     url: `${ip}/auction/updateAuctionStatus`,
@@ -91,6 +94,9 @@ cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, as
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHourSaving} * * *`, async ()=>{
   console.log("update status")
   console.log("cron tab 4")
+  let data = qs.stringify({
+   
+  });
   let config = {
     method: 'post',
     url: `${ip}/auction/updateAuctionStatus`,
