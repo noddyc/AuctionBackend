@@ -7,7 +7,7 @@ let dayHourSaving = 17;
 
 // need to convert to utc or not
 let nightHour = 3;
-let nightMin = 50;
+let nightMin = 45;
 let nightSec = 40;
 
 let nightHourSaving = 2;
