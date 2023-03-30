@@ -540,8 +540,11 @@ const rollOver = async(req, res) =>{
 
             // update status and end time
             let endTime = new Date(matchAuction.dataValues.end_time);
-            endTime.setUTCDate(endTime.getUTCDate() + 1);
-            // console.log(endTime)
+            let curTime = new Date();
+            curTime.setUTCDate(curTime.getUTCDate()+1);
+            while(endTime < curTime){
+                endTime.setUTCDate(endTime.getUTCDate() + 1);
+            }
 
             let updateStatus = await db.auction.update(
                 {status: "OPEN_NOT_LIVE", end_time: endTime , winnning_number: null},
