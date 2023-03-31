@@ -3,7 +3,7 @@ const moment = require("moment")
 const {Op} = require('sequelize');
 const e = require("express");
 const utils = require('../utils')
-
+//
 const addProduct= async (req, res)=>{
     let arr = ['image_1', 'image_2', 'image_3', 'image_4'];
 
