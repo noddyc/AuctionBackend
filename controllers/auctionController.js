@@ -71,6 +71,7 @@ const addAuction= async (req, res)=>{
         status: req.body.status || "OPEN_NOT_LIVE",
         winning_number: req.body.winning_number || null, //
         restart: req.body.restart || false,//
+        multiGame: req.body.multiGame
     }
     try{
         const insertion = await db.auction.create(obj)
@@ -460,6 +461,38 @@ function findOwnerSpot(dataValues){
 
 }
 
+const checkForRollOver = (d, winNum)=>{
+    if(winNum === undefined || winNum === null){
+      return false;
+    }
+    let num1 = winNum.firstNumber;
+    let num2 = winNum.secondNumber;
+    let num3 = winNum.thirdNumber;
+    let special = winNum.specialNumber;
+    let status = d.multiGame;
+  
+    console.log(num1);
+    console.log(num2);
+    console.log(num3);
+    console.log(special);
+    if(status){
+      for(let i = 0; i < 10; i++){
+        console.log(d[`slot${i}`])
+        if(d[`slot${i}`] != null && (i == num1 || i == num2 || i == num3 || i == special)){
+          return false;
+        }
+      }
+    }else{
+      for(let i = 0; i < 10; i++){
+        if(d[`slot${i}`] != null && (i == special)){
+          return false;
+        }     
+      }
+    }
+    return true;
+  }
+
+
 const rollOver = async(req, res) =>{
     //check status and winner
     try{
@@ -520,11 +553,15 @@ const rollOver = async(req, res) =>{
             const num = await db.winning_number.findOne({
                 where: {id: matchAuction.dataValues.winnning_number}
             })
-    
-            if(matchAuction.dataValues[`slot_${num.dataValues.specialNumber}`] !== null){
-                console.log("Failed to RollOver with a winner")
+            if(!checkForRollOver(matchAuction.dataValues, num.dataValues)){
                 throw new Error("Failed to RollOver with a winner")
             }
+
+            
+            // if(matchAuction.dataValues[`slot_${num.dataValues.specialNumber}`] !== null){
+            //     console.log("Failed to RollOver with a winner")
+            //     throw new Error("Failed to RollOver with a winner")
+            // }
     
             // // find onwer spot
             let ownerSpot = findOwnerSpot(matchAuction.dataValues);
