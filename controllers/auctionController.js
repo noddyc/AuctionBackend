@@ -475,6 +475,7 @@ const checkForRollOver = (d, winNum)=>{
     console.log(num2);
     console.log(num3);
     console.log(special);
+    console.log(status);
     if(status){
       for(let i = 0; i < 10; i++){
         console.log(d[`slot${i}`])
@@ -557,7 +558,7 @@ const rollOver = async(req, res) =>{
                 throw new Error("Failed to RollOver with a winner")
             }
 
-            
+
             // if(matchAuction.dataValues[`slot_${num.dataValues.specialNumber}`] !== null){
             //     console.log("Failed to RollOver with a winner")
             //     throw new Error("Failed to RollOver with a winner")
