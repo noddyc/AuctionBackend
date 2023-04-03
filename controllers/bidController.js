@@ -23,7 +23,7 @@ const displayBid = async (req, res)=>{
             where:{
                 userId: id,
             }, 
-            // lock: true,
+            // lock: true,//
             include: [{
                     model:db.auction,
                     required:true,
