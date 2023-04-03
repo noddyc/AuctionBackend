@@ -179,11 +179,10 @@ const displayAuction = async(req, res)=>{
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
                         },
-                        // {
-                        //     model: db.image,
-                        //     as: 'auctionId',
-                        //     attributes: ['data']
-                        // }
+                        {
+                            model: db.product,
+                            through: db.product_auction
+                        }
                       ]
                     ,
                     where:{
@@ -365,11 +364,10 @@ const displayAuction = async(req, res)=>{
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
                         },
-                        // {
-                        //     model: db.image,
-                        //     as: 'auctionId',
-                        //     attributes: ['data']
-                        // }
+                        {
+                            model: db.product,
+                            through: db.product_auction
+                        }
                       ]
                     ,
                     where:{
@@ -556,11 +554,10 @@ const displayAuction = async(req, res)=>{
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
                         },
-                        // {
-                        //     model: db.image,
-                        //     as: 'auctionId',
-                        //     attributes: ['data']
-                        // }
+                        {
+                            model: db.product,
+                            through: db.product_auction
+                        }
                       ]
                     ,
                     where:{
@@ -729,11 +726,10 @@ const displayAuction = async(req, res)=>{
                             model: db.user,
                             attributes: ['firstname', 'lastname', 'username']
                         },
-                        // {
-                        //     model: db.image,
-                        //     as: 'auctionId',
-                        //     attributes: ['data']
-                        // }
+                        {
+                            model: db.product,
+                            through: db.product_auction
+                        }
                       ]
                     ,
                     where:{

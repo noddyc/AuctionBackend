@@ -62,9 +62,10 @@ const addAuction= async (req, res)=>{
     console.log(req.body.end_time);
     let obj = {
         ownerId: req.body.ownerId,//
-        product_name: req.body.product_name,//
-        product_price: req.body.product_price,//
-        product_description: req.body.product_description,//
+        // product_name: req.body.product_name,//
+        // product_price: req.body.product_price,//
+        // product_description: req.body.product_description,//
+        mutliGame: req.body.multiGame,
         start_time: req.body.start_time,//
         end_time: req.body.end_time,//
         status: req.body.status || "OPEN_NOT_LIVE",

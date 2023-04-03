@@ -23,7 +23,7 @@ const displayBid = async (req, res)=>{
             where:{
                 userId: id,
             }, 
-            // lock: true,
+            // lock: true,//
             include: [{
                     model:db.auction,
                     required:true,
@@ -38,6 +38,10 @@ const displayBid = async (req, res)=>{
                             attributes:['firstNumber','secondNumber','thirdNumber','specialNumber'],
                             required: false
                         },
+                        {
+                            model: db.product,
+                            through: db.product_auction,
+                        }
                     ]
                     }]
             })

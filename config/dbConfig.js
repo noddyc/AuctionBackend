@@ -1,8 +1,8 @@
 module.exports={
-    HOST:'gamewebdb.cq1wjzrczlio.us-east-1.rds.amazonaws.com',
+    HOST:'multigame.cq1wjzrczlio.us-east-1.rds.amazonaws.com',
     USER: 'admin',
     PASSWORD: '2446592ny',
-    DB: 'gameWeb',
+    DB: 'multigame',
     dialect: 'mysql',
 
     pool:{

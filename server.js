@@ -10,6 +10,8 @@ const auctionRouter = require('./routes/auctionRouter');
 const winningNumberRouter = require('./routes/winningNumberRouter');
 const bidRouter = require('./routes/bidRouter')
 const notificationRouter = require('./routes/notificationRouter')
+const productRouter = require('./routes/productRouter')
+
 const axios = require('axios')
 const qs = require('qs')
 const multer = require('multer')
@@ -18,6 +20,7 @@ const cron = require('node-cron')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 const ip = 'http://localhost:9001'
+//
 // const ip = 'http://54.224.203.213:9001'
 //
 const utils = require('./utils')
@@ -136,6 +139,7 @@ app.use('/auction', auctionRouter)
 app.use('/user', userRouter)
 app.use('/bid', bidRouter)
 app.use('/notifications', notificationRouter)
+app.use('/product', productRouter)
 
 app.post('/api/posts', upload.array('image'), async (req, res) => {
   const file = req.files
