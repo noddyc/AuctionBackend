@@ -38,6 +38,10 @@ const displayBid = async (req, res)=>{
                             attributes:['firstNumber','secondNumber','thirdNumber','specialNumber'],
                             required: false
                         },
+                        {
+                            model: db.product,
+                            through: db.product_auction,
+                        }
                     ]
                     }]
             })
