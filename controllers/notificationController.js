@@ -1,7 +1,13 @@
+/*
+    database quries of notification
+ */
 const {db, sequelize} = require("../models")
 const {Op, literal} = require('sequelize')
 const moment = require('moment');
 
+/*
+    this is the database query of fetching notifications
+*/
 const displayNotifications = async (req, res)=>{
     let id = req.body.userId;
     try{
@@ -17,6 +23,9 @@ const displayNotifications = async (req, res)=>{
     }
 }
 
+/*
+    this is the database query of updating notifications
+*/
 const updateNotificationsView = async (req, res)=>{
     try{
         let id = req.body.id;
@@ -36,6 +45,9 @@ const updateNotificationsView = async (req, res)=>{
     }
 }
 
+/*
+    this is the database query of searching notification
+*/
 const searchNotifications = async (req, res)=>{
     try{
         const {message, response, viewed, auctionId, senderId, receiverId} = req.body;
@@ -69,6 +81,9 @@ const searchNotifications = async (req, res)=>{
     }
 }
 
+/*
+    this is the database query of creating notifications
+ */
 const createNotifications = async (req, res) =>{
     try{
         let senderId = req.body.senderId
@@ -93,12 +108,12 @@ const createNotifications = async (req, res) =>{
 
 }
 
+/*
+    this is the database query of replying notification
+ */
 const replyNotifications = async (req, res)=>{
-    // implement in transaction
-
     try{
         const result = await sequelize.transaction(async () =>{
-                //update
                 const result = await db.notification.update(
                     {response: req.body.response==="ACCEPT"?"ACCEPT":"DECLINE" },
                     {
@@ -107,7 +122,6 @@ const replyNotifications = async (req, res)=>{
                         }
                     }
                 )
-                // find match
                 const matchNote = await db.notification.findOne(
                     {
                         where: {
@@ -115,8 +129,6 @@ const replyNotifications = async (req, res)=>{
                         }
                     }
                 )
-
-                // create confirm back msg to sender
                 let senderId = matchNote.dataValues.senderId;
                 let receiverId = matchNote.dataValues.receiverId;
                 let obj = req.body.response==="ACCEPT"?
@@ -136,6 +148,9 @@ const replyNotifications = async (req, res)=>{
         }
 }
 
+/*
+    this is the database query of updating notifications
+*/
 const updateNotifications = async (req, res) =>{
     let list = req.body.list;
     console.log(Array.isArray(list));
@@ -170,6 +185,9 @@ const updateNotifications = async (req, res) =>{
     }
 }
 
+/*
+    this is the database query for deleting notifications
+ */
 const deleteNotifications = async (req, res)=>{
     let id = req.body.id;
     try{
@@ -185,7 +203,6 @@ const deleteNotifications = async (req, res)=>{
     }
 
 }
-
 
 
 module.exports={

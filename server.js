@@ -1,17 +1,17 @@
+/*
+    the main entry point of backend server
+*/
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const {sequelize, db} = require("./models")
-const {Sequelize, DataTypes} = require('sequelize');
+const {db} = require("./models")
 const userRouter = require('./routes/userRouter')
 const auctionRouter = require('./routes/auctionRouter');
 const winningNumberRouter = require('./routes/winningNumberRouter');
 const bidRouter = require('./routes/bidRouter')
 const notificationRouter = require('./routes/notificationRouter')
 const productRouter = require('./routes/productRouter')
-
 const axios = require('axios')
 const qs = require('qs')
 const multer = require('multer')
@@ -19,16 +19,11 @@ const _ = require('lodash')
 const cron = require('node-cron')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
-// const ip = 'http://localhost:9001'
-//
 const ip = 'http://54.224.203.213:9001'
-//
 const utils = require('./utils')
 
-//40 17 12
+// consistent update the status of Games that close in the morning 
 cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()=>{
-  console.log("update status")
-  console.log("cron tab 1")
   let data = qs.stringify({
    
   });
@@ -48,9 +43,8 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()
   });
 })
 
+// consistent update the status of Games that close in the morning with day hour saving
 cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, async ()=>{
-  console.log("update status")
-  console.log("cron tab 2")
   let data = qs.stringify({
    
   });
@@ -70,10 +64,8 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, as
   });
 })
 
-
+// consistent update the status of Games that close in the evening
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, async ()=>{
-  console.log("update status")
-  console.log("cron tab 3")
   let data = qs.stringify({
    
   });
@@ -93,10 +85,8 @@ cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, as
   });
 })
 
-
+// consistent update the status of Games that close in the evening with day hour saving
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHourSaving} * * *`, async ()=>{
-  console.log("update status")
-  console.log("cron tab 4")
   let data = qs.stringify({
    
   });
@@ -119,12 +109,12 @@ cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHourSaving} * * 
 const app = express()
 app.use(cors());
 app.use(bodyParser.json());
-// 如果用qs结构，则用extend:true`
 app.use(bodyParser.urlencoded({
     extended:true,
 }))
 app.use(express.json())
 app.use(cookieParser())
+//allow credientials across from other domain
 app.use(
     cors({
       origin: ["http://54.224.203.213:3000", "http://localhost:3000", 'http://3.85.196.187:3000',
@@ -133,14 +123,20 @@ app.use(
     })
   );
 
-
+// import winning number section of the api
 app.use('/winningNum', winningNumberRouter)
+// import game section of the api
 app.use('/auction', auctionRouter)
+// import user section of the api
 app.use('/user', userRouter)
+// import bid section of the api
 app.use('/bid', bidRouter)
+// import notifications section of the api
 app.use('/notifications', notificationRouter)
+// import product section of the api
 app.use('/product', productRouter)
 
+// section of posting images of the api
 app.post('/api/posts', upload.array('image'), async (req, res) => {
   const file = req.files
   const id = req.body.auctionId[0]
@@ -155,13 +151,14 @@ app.post('/api/posts', upload.array('image'), async (req, res) => {
   }
 })
 
-
+// the home page of the api
 app.get('/', (req, res) =>{
     res.send("hello");
 })
 
 
 const server = require('http').createServer(app);
+// implement the io socket for immediate communication
 const io = require('socket.io')(server, {cors:{origin:"*"}})
 let onlineUsers = new Map();
 
@@ -170,21 +167,17 @@ const addNewUser = (userId, socketId) => {
   onlineUsers.set(userId, socketId)
 };
 
-
 const getUser = (userId) => {
   return onlineUsers.get(userId) || null;
 };
 
+// initialize connection of new user
 io.on('connection', (socket)=>{{
-  // console.log("User connected");
-
-
   socket.on("newUser", (username) => {
     addNewUser(username, socket.id);
-    // console.log("I am bere")
-    // console.log(onlineUsers);
   });
 
+  // listening for event of new notification and update the database
   socket.on("createNotification", async({name, auctionId, slot, senderId, receiverId})=>{
     const receiver = getUser(receiverId);
     let obj = {
@@ -194,6 +187,7 @@ io.on('connection', (socket)=>{{
     try{
       const result = await db.notification.create(obj);
       if(receiver !== null){
+        // emit event of increasing notification count
         io.to(receiver).emit(
           "increaseNotifyCount", result.dataValues
         )
@@ -202,17 +196,11 @@ io.on('connection', (socket)=>{{
       console.log(err.messagr)
     }
   })
-  // increase count in
-  // first do it in db,
-  // then emit the event to client
   
+  // listening for event of handling event response and update the database
   socket.on("increaseCount", async ({receiverId, response, id, slot, auctionId, name})=>{
-    // console.log(receiverId+ " "+response+" "+id+" " + slot)
-    // console.log("I am here in increase count")
     const receiver = getUser(receiverId);
-    // console.log(receiverId)
     try{
-          //update
       const result = await db.notification.update(
           {response: response==="ACCEPT"?"ACCEPT":"DECLINE" },
           {
@@ -221,7 +209,6 @@ io.on('connection', (socket)=>{{
               }
           }
       )
-      // find match
       const matchNote = await db.notification.findOne(
         {
             where: {
@@ -231,7 +218,6 @@ io.on('connection', (socket)=>{{
       )
 
       if(response === "ACCEPT"){
-              // delete bid
         let data = qs.stringify({
         'auctionId': auctionId,
         'userId': receiverId,
@@ -247,16 +233,12 @@ io.on('connection', (socket)=>{{
           data : data
         };
         axios(config).then((response) => {
-          // console.log("able to delete")
-          // console.log(JSON.stringify(response.data));
         }).catch((error) => {
           throw new Error("Failed to delete selection")
         })
 
       }
 
-      // console.log(matchNote.dataValues)
-      // create confirm back msg to sender
       let noteSenderId = matchNote.dataValues.senderId;
       let noteReceiverId = matchNote.dataValues.receiverId;
       let obj = response==="ACCEPT"?
@@ -268,10 +250,7 @@ io.on('connection', (socket)=>{{
       }
       const sendBackMsg = await db.notification.create(obj).then(()=>{
         if(receiver !== null){
-          // console.log("I am bere2")
-          // console.log(onlineUsers)
           io.to(receiver).emit(
-            // maybe item is not being removed?
             "increaseNotifyCount", obj
           )
         }
@@ -283,6 +262,7 @@ io.on('connection', (socket)=>{{
   } )
 }})
 
+// the backend is listening on port 9001
 server.listen(9001, ()=>{
     console.log("running on port 9001")
 })

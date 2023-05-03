@@ -1,3 +1,6 @@
+/*
+    this is the schema of winning number table
+*/
 module.exports = (sequelize, DataTypes)=>{
     const winning_number = sequelize.define("Winning_Number",{
         firstNumber:{

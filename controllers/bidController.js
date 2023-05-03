@@ -1,8 +1,14 @@
+/*
+    database quries of bids
+ */
 const {db, sequelize} = require("../models")
 const {Op, literal} = require('sequelize')
 const moment = require('moment');
 const _ = require('lodash')
 
+/*
+    this is the function to check if the slot is the 6th slot
+*/
 const checkSlotIsSix = (dataValues)=>{
     const arr = ['slot_0', 'slot_1', 'slot_2', 'slot_3', 'slot_4', 'slot_5', 'slot_6', 'slot_7', 'slot_8','slot_9','slot_10'];
     let count = 0;
@@ -15,15 +21,16 @@ const checkSlotIsSix = (dataValues)=>{
     return count <= 6
 }
 
+/*
+    this is the database query of displaying game bids
+*/
 const displayBid = async (req, res)=>{
     let id = req.body.userId;
     try{
-        console.log("start of displayBid----------");
         const result = await db.biding.findAll({
             where:{
                 userId: id,
             }, 
-            // lock: true,//
             include: [{
                     model:db.auction,
                     required:true,
@@ -45,17 +52,16 @@ const displayBid = async (req, res)=>{
                     ]
                     }]
             })
-        console.log("end of displayBid----------");
         res.status(200).send(result);
     }catch(err){
         console.log(err.message);
     }
 }
 
-
+/*
+    this is the database query of withdraw game bids
+*/
 const withdrawBid1 = async (req, res)=>{
-    // first confirm status
-    // 多少种状况
     try{
         const result = await sequelize.transaction(async () =>{
         
@@ -78,15 +84,11 @@ const withdrawBid1 = async (req, res)=>{
                 where: {id: slotId}
             })
             
-            //情况一，不split
             if(matchSlot.dataValues?.split == 'false'){
-                console.log("start of withdraw1 --------------------")
-                // return res.status(200).send("this is not split");
                 const slotDeletion = await db.slot.destroy({
                     where: {id: slotId}
                 })
 
-                // remove bid
                 const matchBid = await db.biding.findOne({
                     where:{userId: req.body.userId, 
                     auctionId: req.body.auctionId,
@@ -97,7 +99,6 @@ const withdrawBid1 = async (req, res)=>{
                         {where: {id: matchBid.dataValues.id}}
                     )
                 }
-                // remove userauction if applicable
                 const matchUserAuction = await db.biding.findAll({
                     where:{
                         userId: req.body.userId, 
@@ -113,11 +114,9 @@ const withdrawBid1 = async (req, res)=>{
                     })
                 }
 
-                ////
                 const checkAuctionIsSix = await db.auction.findOne({
                     where: {id: req.body.auctionId}
                 }).then(async (e)=>{
-                    console.log("line 188")
                     if(checkSlotIsSix(e.dataValues)){
                         await db.auction.update(
                             {status: 'OPEN_NOT_LIVE'},
@@ -127,18 +126,12 @@ const withdrawBid1 = async (req, res)=>{
                         )
                     }
                 })
-
-                console.log("end of withdraw1 --------------------")
                 return res.status(200).send("Successfully delete");
             }else{
-                console.log("start of withdraw2 --------------------")
-                //split, player1
                 if(matchSlot.dataValues?.player1 == req.body.userId){
                     const slot= await db.slot.update({player1: null}, {
                         where: {id: slotId}
                     })
-
-                    // remove bid
                     const matchBid = await db.biding.findOne({
                         where:{userId: req.body.userId, 
                         auctionId: req.body.auctionId,
@@ -149,7 +142,6 @@ const withdrawBid1 = async (req, res)=>{
                             {where: {id: matchBid.dataValues.id}}
                         )
                     }
-                    // remove userauction if applicable
                     const matchUserAuction = await db.biding.findAll({
                         where:{
                             userId: req.body.userId, 
@@ -166,14 +158,11 @@ const withdrawBid1 = async (req, res)=>{
                     }
                 }
 
-
-                //split, player2
                 if(matchSlot.dataValues?.player2 == req.body.userId){
                     const slot= await db.slot.update({player2: null}, {
                         where: {id: slotId}
                     })
 
-                    // remove bid
                     const matchBid = await db.biding.findOne({
                         where:{userId: req.body.userId, 
                         auctionId: req.body.auctionId,
@@ -184,7 +173,7 @@ const withdrawBid1 = async (req, res)=>{
                             {where: {id: matchBid.dataValues.id}}
                         )
                     }
-                    // remove userauction if applicable
+
                     const matchUserAuction = await db.biding.findAll({
                         where:{
                             userId: req.body.userId, 
@@ -200,7 +189,7 @@ const withdrawBid1 = async (req, res)=>{
                         })
                     }
                 }
-                // check if player 1 and player 2 is null
+
                 const confirmSlot= await db.slot.findOne(
                     {where: {id: slotId}})
                 if(confirmSlot.player1 === null && confirmSlot.player2 === null){
@@ -215,7 +204,7 @@ const withdrawBid1 = async (req, res)=>{
                 const checkAuctionIsSix = await db.auction.findOne({
                     where: {id: req.body.auctionId}
                 }).then(async (e)=>{
-                    console.log("line 188")
+
                     if(checkSlotIsSix(e.dataValues)){
                         await db.auction.update(
                             {status: 'OPEN_NOT_LIVE'},
@@ -226,7 +215,6 @@ const withdrawBid1 = async (req, res)=>{
                     }
                 })
 
-                console.log("end of withdraw2 --------------------")
                 return res.status(200).send("Successfully delete");
             }
         })
@@ -237,6 +225,9 @@ const withdrawBid1 = async (req, res)=>{
 }
 
 
+/*
+    this is the database query of withdraw game bids
+*/
 const withdrawBid = async (req, res)=>{
     try{
         const result = await sequelize.transaction(async () =>{
@@ -245,21 +236,16 @@ const withdrawBid = async (req, res)=>{
                 id:req.body.auctionId,
                 status: 'IN_PROGRESS'
             }
-            // search for auction
             const matchAuction = await db.auction.findOne({
                 where: conditions
             })
             if(!matchAuction?.dataValues){
                 throw new Error("Auction not found or auction is not in progress");
-            }
-            // update auction slot
-        
+            }        
             const updateSlot = await db.auction.update(
                 {[`slot_${req.body.slot}`]: null, slotsOpen: matchAuction.dataValues.slotsOpen+1},
                 {returning: true, where: conditions}
             )
-            // delete bid
-
             const deleteBid = await db.biding.destroy({
                 where:{
                     userId: req.body.userId,
@@ -268,14 +254,10 @@ const withdrawBid = async (req, res)=>{
                     }
                 }
             )
-
-            // check user_auction
             const bids = await db.biding.findAll({
                 where: {userId: req.body.userId, auctionId: req.body.auctionId}
             })
 
-            
-            
             if(bids.length===0){
                 const deleteUserAuction = await db.user_auction.destroy({
                     where: {userId: req.body.userId, auctionId: req.body.auctionId}

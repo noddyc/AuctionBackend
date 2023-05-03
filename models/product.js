@@ -1,3 +1,7 @@
+/*
+    this is the schema of the product table
+*/
+
 module.exports = (sequelize, DataTypes)=>{
     const product = sequelize.define("Product",{
         product_name:{

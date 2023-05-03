@@ -1,16 +1,21 @@
+/*
+    database quries of displaying games
+ */
+
 const {sequelize, db} = require("../models")
 const moment = require("moment")
 const {Op} = require('sequelize');
 const e = require("express");
 
+/*
+    this is the database query of displaying game information
+*/
 const displayAuction = async(req, res)=>{
-    // console.log(req.body);
     const statues = req.body.statues;
     const ownerId = req.body.ownerId;
     console.log(statues);
     console.log(ownerId)
     try{
-        // find owner id first
         if(ownerId){
             if(Array.isArray(statues)){
                 const result = await db.auction.findAll({
@@ -384,8 +389,7 @@ const displayAuction = async(req, res)=>{
                 res.status(200).json(result)
             }
         }else{
-            // owner id not present
-            // console.log(Array.isArray(statues));
+
             if(Array.isArray(statues)){
                 const result = await db.auction.findAll({
                     include: [

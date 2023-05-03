@@ -1,7 +1,14 @@
+/*
+    database queries of winning number
+*/
+
 const {db, sequelize} = require("../models")
 const {Op} = require('sequelize')
 const moment = require('moment');
 
+/*
+    this is the database query of adding winning number
+*/
 const addWinningNumber = async (req, res)=>{
     try{
         let obj = {
@@ -30,6 +37,10 @@ const addWinningNumber = async (req, res)=>{
     }
 }
 
+/*
+    this is the database query of submitting winning number
+*/
+
 const submitWinningNumber = async (req, res)=>{
     try{
         let obj = {
@@ -39,9 +50,7 @@ const submitWinningNumber = async (req, res)=>{
             specialNumber: req.body.specialNumber,
             postTime: new Date()
         }
-        const targetDateTime = new Date(); // Replace with your target date and time
-        // const targetDate = new Date(targetDateTime.getFullYear(), targetDateTime.getMonth(), targetDateTime.getDate());
-        // const targetTime = targetDateTime.getTime();
+        const targetDateTime = new Date(); 
 
         const result = await sequelize.transaction(async()=>{
             const insertion = await db.winning_number.create(obj);

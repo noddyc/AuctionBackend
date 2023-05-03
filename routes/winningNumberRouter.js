@@ -1,3 +1,6 @@
+/*
+    this is the router of the winning number section
+*/
 const winningNumController = require('../controllers/winningNumController')
 const winningNumberRouter = require('express').Router()
 

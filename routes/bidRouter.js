@@ -1,3 +1,6 @@
+/*
+    this is the router of bid section
+*/
 const bidController = require('../controllers/bidController.js')
 const bidRouter = require('express').Router()
 

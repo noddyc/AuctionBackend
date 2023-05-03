@@ -1,12 +1,18 @@
+/*
+    database quries of displaying games
+ */
+
 const {sequelize, db} = require("../models")
 const moment = require("moment")
 const {Op} = require('sequelize');
 const e = require("express");
 
+/*
+    this is the database query of displaying game information
+ */
 const displayAuction1 = async(req, res)=>{
     const ownerId = req.body.ownerId;
     try{
-        // find owner id first
         const result = await db.auction.findAll({
             include:[
                 {

@@ -1,3 +1,6 @@
+/*
+    this is the schema of notification table
+*/
 module.exports = (sequelize, DataTypes)=>{
     const notification = sequelize.define("Notification",{
         type:{

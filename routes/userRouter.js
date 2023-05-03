@@ -1,9 +1,8 @@
+/*
+    this is the router of the user section
+*/
 const userController = require('../controllers/userController.js')
 const userRouter = require('express').Router()
-const passport = require("passport");
-const passportJwt = require("passport-jwt");
-const ExtractJwt = passportJwt.ExtractJwt;
-const StrategyJwt = passportJwt.Strategy;
 
 userRouter.put('/addUser', userController.addUser)
 userRouter.post('/checkDuplicateEmail', userController.checkDuplicateEmail)

@@ -1,3 +1,6 @@
+/*
+    database configuration
+*/
 module.exports={
     HOST:'multigame.cq1wjzrczlio.us-east-1.rds.amazonaws.com',
     USER: 'admin',

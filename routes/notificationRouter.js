@@ -1,3 +1,7 @@
+/*
+    this is the router of the notification section 
+*/
+
 const notificationController = require('../controllers/notificationController.js')
 const notificationRouter = require('express').Router()
 

@@ -1,3 +1,6 @@
+/*
+  information of login authorization
+*/
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
 const ExtractJwt = passportJwt.ExtractJwt;

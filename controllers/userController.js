@@ -1,3 +1,6 @@
+/*
+    database queries of user 
+*/
 const {db} = require("../models")
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
@@ -7,6 +10,9 @@ const StrategyJwt = passportJwt.Strategy;
 const {Op} = require('sequelize')
 
 
+/*
+    this is the database query of adding new user
+*/
 const addUser = async (req, res)=>{
     let obj = {
         username: req.body.username,
@@ -23,6 +29,9 @@ const addUser = async (req, res)=>{
     }
 }
 
+/*
+    this is the database query of checking duplicate username
+*/
 const checkDuplicateUserName = async (req, res) =>{
     const username = req.body.username
     try{
@@ -40,6 +49,9 @@ const checkDuplicateUserName = async (req, res) =>{
     }
 }
 
+/*
+    this is the database query of checking duplicate email
+*/
 const checkDuplicateEmail = async (req, res) =>{
     const email = req.body.email
     try{
@@ -56,6 +68,9 @@ const checkDuplicateEmail = async (req, res) =>{
     }
 }
 
+/*
+    this is the database query of user login 
+*/
 const loginUser = async (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
@@ -64,31 +79,27 @@ const loginUser = async (req, res) =>{
             where: {email}
         })
         if(matchUser == null){
-            // console.log("1");
             res.status(500).json({message: "User doesn't exist"});
         }else{
             if(matchUser.dataValues.password === password){
-                // req.session.email = matchUser.dataValues.email;
-                // console.log("2");
-                // console.log(req.session)
                 const jwtToken = jwt.sign(
                     { id: matchUser.dataValues.id },
                     'secret'
                   );
                 res.status(200).json({id: matchUser.dataValues.id, message: "Log in successful", token: jwtToken})
             }else{
-                // console.log("3");
                 res.status(500).json({message: "Wrong username/password"})
             }
         }
     }catch(err){
-        // console.log("4")
         res.send(err.message)
     }
 }
 
 
-
+/*
+    this is the database query of fetching user information
+*/
 const getInfo = async (req, res)=>{
     let whereClause = {};
     if(req.body.email){
@@ -118,7 +129,9 @@ const getInfo = async (req, res)=>{
     }
 }
 
-
+/*
+    this is the databse query of updating user information
+*/
 const updateUser = async (req, res) =>{
     try{
         let updateConditions = {id: req.body.id};

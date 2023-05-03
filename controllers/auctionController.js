@@ -1,18 +1,13 @@
+/*
+    database quries of games
+ */
 const {sequelize, db} = require("../models")
 const moment = require("moment")
 const {Op} = require('sequelize');
 const e = require("express");
 const utils = require('../utils')
 
-
-function getRandomIntInclusive(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-
-
+// test function
 const test = async(req,res)=>{
     try{
         const result = await db.auction.findAll({
@@ -29,7 +24,9 @@ const test = async(req,res)=>{
     }
 }
 
-
+/*
+    this is the database query of fetching images
+*/
 const getImage = async(req,res)=>{
     const auctionId = req.body.auctionId;
 
@@ -58,19 +55,19 @@ const getImage = async(req,res)=>{
     }
 }
 
+/*
+    this is the database query of add new game
+*/
 const addAuction= async (req, res)=>{
     console.log(req.body.end_time);
     let obj = {
-        ownerId: req.body.ownerId,//
-        // product_name: req.body.product_name,//
-        // product_price: req.body.product_price,//
-        // product_description: req.body.product_description,//
+        ownerId: req.body.ownerId,
         mutliGame: req.body.multiGame,
-        start_time: req.body.start_time,//
-        end_time: req.body.end_time,//
+        start_time: req.body.start_time,
+        end_time: req.body.end_time,
         status: req.body.status || "OPEN_NOT_LIVE",
-        winning_number: req.body.winning_number || null, //
-        restart: req.body.restart || false,//
+        winning_number: req.body.winning_number || null,
+        restart: req.body.restart || false,
         multiGame: req.body.multiGame
     }
     try{
@@ -81,48 +78,44 @@ const addAuction= async (req, res)=>{
     }
 }
 
+/*
+    this is the database query of joining game
+*/
 const joinAuction= async (req, res)=>{
     try{
         const result = await sequelize.transaction(async () =>{
             let id = req.body.auctionId;
-            // search for auction
             const matchAuction = await db.auction.findOne({
                 where: {id:id}
             })
             if(matchAuction === null){
                 throw new Error("auction not found");
             }
-            // check time
+
             let currentTime = moment(new Date(), req.body.timezone);
             let endTime = moment(matchAuction.dataValues.end_time)
             let endTimeConverted = endTime.subtract(10, 'minutes').tz();
-            console.log(endTimeConverted)
 
             if(currentTime >= endTimeConverted){
                 console.log("auction is closed");
                 throw new Error("auction is closed")
             }
 
-            // check owner
             if(matchAuction.dataValues.ownerId === req.body.userId){
                 console.log("can not join auction created by you");
                 throw new Error("can not join auction created by you")
             }
 
-            // check slots
             if(matchAuction.dataValues.slotsOpen === 0){
                 console.log("auction is full");
                 throw new Error("auction is full");
             }
 
-            // check selected slot is open
             let slotNum = `slot_${req.body.pick}`;
             if(matchAuction.dataValues[slotNum] !== null){
                 console.log("selected slot is filled");
                 throw new Error("selected slot is filled")
             }
-            // add slots to acution
-            console.log(matchAuction.dataValues);
             let slotOpen = matchAuction.dataValues.slotsOpen;
             let slotNum1 = `slot_${req.body.pick}`;
             const incrementResult = await db.auction.update(
@@ -134,10 +127,8 @@ const joinAuction= async (req, res)=>{
                 auctionId: req.body.auctionId,
                 slot_number: req.body.pick
             }
-            // add a relationship to bid record
             const addNewBid = await db.biding.create(newBid);
 
-            // add a relationship to user auction
             const matchUserAuction = await db.user_auction.findOne({
                 where: {userId:req.body.userId, auctionId: req.body.auctionId}
             })
@@ -155,6 +146,10 @@ const joinAuction= async (req, res)=>{
     }
 }
 
+
+/*
+    this is the database query of canceling a game
+*/
 const cancelAuction = async(req, res)=>{
     try{
         const userId = req.body.userId;
@@ -182,20 +177,23 @@ const cancelAuction = async(req, res)=>{
 }
 
 
+/*
+    this is the database query of creating a new game
+*/
 const createAuction = async(req, res)=>{
     try{
         const result = await db.slotsTable.create();
         const id = result.dataValues.id;
         let obj = {
-            ownerId: req.body.ownerId,//
-            product_name: req.body.product_name,//
-            product_price: req.body.product_price,//
-            product_description: req.body.product_description,//
-            start_time: req.body.start_time,//
-            end_time: req.body.end_time,//
-            status: req.body.status,//
-            winning_number: req.body.winning_number || null, //
-            restart: req.body.restart || false,//
+            ownerId: req.body.ownerId,
+            product_name: req.body.product_name,
+            product_price: req.body.product_price,
+            product_description: req.body.product_description,
+            start_time: req.body.start_time,
+            end_time: req.body.end_time,
+            status: req.body.status,
+            winning_number: req.body.winning_number || null, 
+            restart: req.body.restart || false,
 
         }
         res.status(200).json(result.dataValues.id);
@@ -204,6 +202,9 @@ const createAuction = async(req, res)=>{
     }
 }
 
+/*
+    function of checking slots are filled
+*/
 function checkSlotsFilled(dataValues){
     const slotArr = ['slot_0','slot_1','slot_2','slot_3','slot_4','slot_5','slot_6','slot_7','slot_8','slot_9'];
     let count = 0;
@@ -215,11 +216,13 @@ function checkSlotsFilled(dataValues){
     return count;
 }
 
+
+/*
+    this is the database query of joining a game
+*/
 const joinAuction1 = async(req, res)=>{
     try{
         const result = await sequelize.transaction(async ()=>{
-            // let id = req.body.auctionId;
-
             let split = req.body.split;
             let slot = req.body.slot;
 
@@ -236,45 +239,29 @@ const joinAuction1 = async(req, res)=>{
             let currentTime = moment(new Date(), 'UTC');
             let endTime = moment(matchAuction.dataValues.end_time)
             let endTimeConverted = endTime.subtract(6, 'minutes').tz();
-            // console.log(endTimeConverted)
 
             if(currentTime >= endTimeConverted){
-                console.log("Game is closed");
                 throw new Error("Game is closed")
             }
 
-            // check owner
             if(matchAuction.dataValues.ownerId === req.body.userId){
-                console.log("can not join game created by you");
                 throw new Error("can not join game created by you")
             }
 
-            // confirm the slot is being taken
             if(matchAuction.dataValues[`slot_${slot}`] !== null){
-                console.log('line 249')
                 if(split == 'false'){
-                    console.log('line 250')
                     throw new Error("can not join game that is occupied")
                 }else{
-                    console.log(matchAuction.dataValues)
-                    console.log(matchAuction.dataValues[`slot_${slot}`]);
                     const slotInfo = await db.slot.findOne(
                         {where: {id: matchAuction.dataValues[`slot_${slot}`]}}
                     )
-                    console.log('line 259')
-                    console.log(slotInfo.dataValues)
                     if(slotInfo.split == false){
                         throw new Error("can not join game that is occupied")
                     }
                 }
             }
 
-            // console.log(split);
-            // check slot is filled or not
-            
-            // create slot
             if(split == 'false'){
-                console.log('here')
                 let obj = {
                     split: false,
                     player1: req.body.userId,
@@ -289,15 +276,12 @@ const joinAuction1 = async(req, res)=>{
                 }
                 
                 const insertion = await db.slot.create(obj);
-                //update auction
                 const update = await db.auction.update(
                     {[`slot_${slot}`]: insertion.id},
                     {where: {id: req.body.auctionId}}
                 )
 
                 const addNewBid = await db.biding.create(newBid);
-
-                            // add a relationship to user auction
                 const matchUserAuction = await db.user_auction.findOne({
                     where: {userId:req.body.userId, auctionId: req.body.auctionId}
                 })
@@ -309,7 +293,6 @@ const joinAuction1 = async(req, res)=>{
                 };
             }else{
                 if(matchAuction.dataValues[`slot_${slot}`] === null){
-                    console.log("line 992")
                     let obj = {
                         split: true,
                         player1: req.body.userId,
@@ -324,15 +307,12 @@ const joinAuction1 = async(req, res)=>{
                     }
 
                     const insertion = await db.slot.create(obj);
-                    //update auction
                     const update = await db.auction.update(
                         {[`slot_${slot}`]: insertion.id},
                         {where: {id: req.body.auctionId}}
                     )
     
                     const addNewBid = await db.biding.create(newBid);
-    
-                                // add a relationship to user auction
                     const matchUserAuction = await db.user_auction.findOne({
                         where: {userId:req.body.userId, auctionId: req.body.auctionId}
                     })
@@ -343,29 +323,19 @@ const joinAuction1 = async(req, res)=>{
                         )
                     };   
                 }else{
-                    // match for the slot 
                     const slotMatch = await db.slot.findOne({
                         where: {id: matchAuction.dataValues[`slot_${slot}`]}
                     })
-                    console.log(slotMatch.dataValues)
-                    // there is no player2
                     if(slotMatch.dataValues.player2 === null){
-                        // console.log("line 1028")
-                        // return res.status(200).send("line 1028")
                         const slotId = matchAuction.dataValues[`slot_${slot}`];
-                        //update auction
                         const update = await db.slot.update(
                             {[`player2`]: req.body.userId},
                             {where: {id: slotId}}
                         )
-                        // if findone not found then returns null;
                         const matchBid = await db.biding.findOne({
                             where: {userId:req.body.userId, auctionId: req.body.auctionId, slot_number: req.body.slot}
                         })
             
-                        // console.log("line is 1046")
-                        // console.log(matchBid)
-                        // console.log(matchBid.dataValues === null || matchBid.dataValues === undefined)
                         if(matchBid===null || matchBid === undefiend){
                             console.log("line 1047")
                             const addBid = await db.biding.create(
@@ -378,34 +348,21 @@ const joinAuction1 = async(req, res)=>{
                         const matchUserAuction = await db.user_auction.findOne({
                             where: {userId:req.body.userId, auctionId: req.body.auctionId}
                         })
-                        console.log("line 1061")
-                        console.log(matchUserAuction)
                         if(matchUserAuction === null || matchUserAuction === undefined){
                             const addUserAuction = await db.user_auction.create(
                                 {userId:req.body.userId, auctionId: req.body.auctionId}
                             )
                         }
                     }else{
-                        // const slotId = matchAuction.dataValues[`slot_${slot}`];
-                        // //update auction
-                        // console.log("line 1060")
-                        // return res.status(200).send("line 1060")
                         const slotId = matchAuction.dataValues[`slot_${slot}`];
-                        //update auction
                         const update = await db.slot.update(
                             {[`player1`]: req.body.userId},
                             {where: {id: slotId}}
                         )
-                        // if findone not found then returns null;
                         const matchBid = await db.biding.findOne({
                             where: {userId:req.body.userId, auctionId: req.body.auctionId, slot_number: req.body.slot}
                         })
-            
-                        // console.log("line is 1046")
-                        // console.log(matchBid)
-                        // console.log(matchBid.dataValues === null || matchBid.dataValues === undefined)
                         if(matchBid===null || matchBid === undefiend){
-                            console.log("line 1047")
                             const addBid = await db.biding.create(
                                 {   userId: req.body.userId,
                                     auctionId: req.body.auctionId,
@@ -416,8 +373,6 @@ const joinAuction1 = async(req, res)=>{
                         const matchUserAuction = await db.user_auction.findOne({
                             where: {userId:req.body.userId, auctionId: req.body.auctionId}
                         })
-                        console.log("line 1061")
-                        console.log(matchUserAuction)
                         if(matchUserAuction === null || matchUserAuction === undefined){
                             const addUserAuction = await db.user_auction.create(
                                 {userId:req.body.userId, auctionId: req.body.auctionId}
@@ -442,7 +397,6 @@ const joinAuction1 = async(req, res)=>{
                 )
             }
             
-            
             return res.status(200).json("Successfully join game");
         })
     }catch(err){
@@ -450,6 +404,9 @@ const joinAuction1 = async(req, res)=>{
     }
 }
 
+/*
+    function of finding the first spot that is owned
+*/
 function findOwnerSpot(dataValues){
     let arr = ['slot0', 'slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8', 'slot9']
     for(let i = 0; i < arr.length; i++){
@@ -458,9 +415,11 @@ function findOwnerSpot(dataValues){
         }
     }
     return null;
-
 }
 
+/*
+    function to check if the slot is being roll over
+*/
 const checkForRollOver = (d, winNum)=>{
     if(winNum === undefined || winNum === null){
       return false;
@@ -471,14 +430,8 @@ const checkForRollOver = (d, winNum)=>{
     let special = winNum.specialNumber;
     let status = d.multiGame;
   
-    console.log(num1);
-    console.log(num2);
-    console.log(num3);
-    console.log(special);
-    console.log(status);
     if(status){
       for(let i = 0; i < 10; i++){
-        console.log(d[`slot${i}`])
         if(d[`slot${i}`] != null && (i == num1 || i == num2 || i == num3 || i == special)){
           return false;
         }
@@ -494,8 +447,10 @@ const checkForRollOver = (d, winNum)=>{
   }
 
 
+/*
+    this is the database query of rolling over a selected slot
+*/
 const rollOver = async(req, res) =>{
-    //check status and winner
     try{
         const result = await sequelize.transaction(async ()=>{
             const matchAuction = await db.auction.findOne({
@@ -546,11 +501,9 @@ const rollOver = async(req, res) =>{
                     id: req.body.auctionId
                 }
             })
-            // check status
             if(matchAuction.dataValues.status !== 'NO_WINNER_WINNER_NOTIFIED'){
                 throw new Error("Failed to RollOver");
             }
-            // check no winner
             const num = await db.winning_number.findOne({
                 where: {id: matchAuction.dataValues.winnning_number}
             })
@@ -558,17 +511,8 @@ const rollOver = async(req, res) =>{
                 throw new Error("Failed to RollOver with a winner")
             }
 
-
-            // if(matchAuction.dataValues[`slot_${num.dataValues.specialNumber}`] !== null){
-            //     console.log("Failed to RollOver with a winner")
-            //     throw new Error("Failed to RollOver with a winner")
-            // }
-    
-            // // find onwer spot
             let ownerSpot = findOwnerSpot(matchAuction.dataValues);
-            
-           
-            // delete owner spot
+
             if(ownerSpot !== null){
                 const deleteSpot = await db.slot.destroy(
                     {where: 
@@ -577,7 +521,6 @@ const rollOver = async(req, res) =>{
                 )
             }
 
-            // update status and end time
             let endTime = new Date(matchAuction.dataValues.end_time);
             let curTime = new Date();
             curTime.setUTCDate(curTime.getUTCDate()+1);
@@ -599,6 +542,9 @@ const rollOver = async(req, res) =>{
     }
 }
 
+/*
+    function to check if the game has 6 slots filed
+*/
 function sixSpotTaken(dataValues){
     let arr = ['slot0', 'slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'slot7', 'slot8', 'slot9']
     let count = 0;
@@ -610,6 +556,9 @@ function sixSpotTaken(dataValues){
     return count === 6;
 }
 
+/*
+    function to find first open slot
+ */
 function firstOpenSpot(dataValues){
     let arr = ['slot_0', 'slot_1', 'slot_2', 'slot_3', 'slot_4', 'slot_5', 'slot_6', 'slot_7', 'slot_8', 'slot_9']
     let count = 0;
@@ -621,16 +570,15 @@ function firstOpenSpot(dataValues){
     return null;
 }
 
-
+/*
+    this is the database query of updating game status
+*/
 const updateAuctionStatus = async(req, res)=>{
     try{
         const result = await sequelize.transaction(async ()=>{
             let currentDate = new Date();
             let sixMinutesLater =  new Date(currentDate.toUTCString());
             sixMinutesLater.setMinutes(sixMinutesLater.getMinutes() + 6);
-            console.log("line 589 for update status")
-            console.log(sixMinutesLater)
-            //update
             const update = await db.auction.update(
                 {status: 'WAITING_FOR_DRAW'},
                 {   
@@ -653,9 +601,10 @@ const updateAuctionStatus = async(req, res)=>{
     }
 }
 
+/*
+    this is the database query of adding host to a game
+*/
 const addHost = async(req, res)=>{
-    // is waiting for draw
-    // has six spot
     try{
         const result = await sequelize.transaction(async ()=>{
             const matchAuction = await db.auction.findOne({
@@ -707,18 +656,13 @@ const addHost = async(req, res)=>{
                 }
             })
 
-
             if(matchAuction.dataValues.status !=='WAITING_FOR_DRAW'){
-                console.log("1310 here")
                 throw new Error("Failed to pick slot as host")
             }
             if(!sixSpotTaken(matchAuction.dataValues)){
-                console.log(sixSpotTaken(matchAuction.dataValues));
-                console.log("1314 here")
                 throw new Error("Failed to pick slot as host")
             }
 
-            // // create slot
             const createSlot = await db.slot.create(
 
                 {   
@@ -730,11 +674,8 @@ const addHost = async(req, res)=>{
                 
                 }
             )
-            // // update slot
 
             let openSlot = firstOpenSpot(matchAuction.dataValues);
-            console.log(openSlot);
-            console.log(createSlot.dataValues.id);
 
             const updateSlot = await db.auction.update(
                 {
