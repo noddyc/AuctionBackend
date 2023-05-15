@@ -19,7 +19,7 @@ const _ = require('lodash')
 const cron = require('node-cron')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
-const ip = 'http://54.224.203.213:9001'
+const ip = 'http://18.215.172.154:9001'
 const utils = require('./utils')
 
 // consistent update the status of Games that close in the morning 
@@ -117,7 +117,7 @@ app.use(cookieParser())
 //allow credientials across from other domain
 app.use(
     cors({
-      origin: ["http://54.224.203.213:3000", "http://localhost:3000", 'http://3.85.196.187:3000',
+      origin: ["http://18.234.130.125:3000", "http://localhost:3000", 'http://3.85.196.187:3000',
       "http://18.234.130.125:9001"],
       credentials: true,
     })
