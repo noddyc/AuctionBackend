@@ -19,13 +19,13 @@ const _ = require('lodash')
 const cron = require('node-cron')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
-const ip = 'http://18.215.172.154:9001'
+const ip = 'http://44.211.165.49:9001'
 const utils = require('./utils')
 
-// consistent update the status of Games that close in the morning 
+// consistent update the status of Games that close in the morning
 cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()=>{
   let data = qs.stringify({
-   
+
   });
   let config = {
     method: 'post',
@@ -33,7 +33,7 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()
     headers: { },
     data : data
   };
-  
+
   axios(config)
   .then((response) => {
     console.log(JSON.stringify(response.data));
@@ -46,7 +46,7 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHour} * * *`, async ()
 // consistent update the status of Games that close in the morning with day hour saving
 cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, async ()=>{
   let data = qs.stringify({
-   
+
   });
   let config = {
     method: 'post',
@@ -54,7 +54,7 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, as
     headers: { },
     data : data
   };
-  
+
   axios(config)
   .then((response) => {
     console.log(JSON.stringify(response.data));
@@ -67,7 +67,7 @@ cron.schedule(`${utils.daySec} ${utils.dayMin} ${utils.dayHourSaving} * * *`, as
 // consistent update the status of Games that close in the evening
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, async ()=>{
   let data = qs.stringify({
-   
+
   });
   let config = {
     method: 'post',
@@ -75,7 +75,7 @@ cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, as
     headers: { },
     data : data
   };
-  
+
   axios(config)
   .then((response) => {
     console.log(JSON.stringify(response.data));
@@ -88,7 +88,7 @@ cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHour} * * *`, as
 // consistent update the status of Games that close in the evening with day hour saving
 cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHourSaving} * * *`, async ()=>{
   let data = qs.stringify({
-   
+
   });
   let config = {
     method: 'post',
@@ -96,7 +96,7 @@ cron.schedule(`${utils.nightSec} ${utils.nightMin} ${utils.nightHourSaving} * * 
     headers: { },
     data : data
   };
-  
+
   axios(config)
   .then((response) => {
     console.log(JSON.stringify(response.data));
@@ -117,7 +117,7 @@ app.use(cookieParser())
 //allow credientials across from other domain
 app.use(
     cors({
-      origin: ["http://18.215.172.154:3000", "http://localhost:3000", 'http://3.85.196.187:3000',
+      origin: ["http://44.211.165.49:3000", "http://localhost:3000", 'http://3.85.196.187:3000',
       "http://18.215.172.154:9001"],
       credentials: true,
     })
@@ -182,7 +182,7 @@ io.on('connection', (socket)=>{{
     const receiver = getUser(receiverId);
     let obj = {
       type: "RETRACTION_SEND", message: `Player ${_.startCase(name)} (id: ${senderId}) request retraction of Game (id: ${auctionId}) on Slot ${slot}`,
-      auctionId: auctionId, senderId: senderId, receiverId: receiverId, 
+      auctionId: auctionId, senderId: senderId, receiverId: receiverId,
     }
     try{
       const result = await db.notification.create(obj);
@@ -196,7 +196,7 @@ io.on('connection', (socket)=>{{
       console.log(err.messagr)
     }
   })
-  
+
   // listening for event of handling event response and update the database
   socket.on("increaseCount", async ({receiverId, response, id, slot, auctionId, name})=>{
     const receiver = getUser(receiverId);
@@ -223,11 +223,11 @@ io.on('connection', (socket)=>{{
         'userId': receiverId,
         'slot': slot,
         });
-  
+
         let config = {
           method: 'post',
           url: `${ip}/bid/withdrawBid1`,
-          headers: { 
+          headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           data : data
